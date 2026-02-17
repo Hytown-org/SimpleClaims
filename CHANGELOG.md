@@ -1,3 +1,7 @@
+# 1.0.31
+
+* Fixed using the wrong interaction for the sickle interaction
+
 # 1.0.30
 
 * Added safety checks to the replace interaction

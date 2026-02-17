@@ -109,8 +109,9 @@ public class Main extends JavaPlugin {
         interaction.register("CycleBlockGroup", ClaimCycleBlockGroupInteraction.class, ClaimCycleBlockGroupInteraction.CUSTOM_CODEC);
         interaction.register("PlaceFluid", ClaimPlaceBucketInteraction.class, ClaimPlaceBucketInteraction.CUSTOM_CODEC);
         interaction.register("RefillContainer", ClaimPickupBucketInteraction.class, ClaimPickupBucketInteraction.CUSTOM_CODEC);
-        interaction.register("Replace", ClaimReplaceInteraction.class, ClaimReplaceInteraction.CUSTOM_CODEC);
+        //interaction.register("Replace", ClaimReplaceInteraction.class, ClaimReplaceInteraction.CUSTOM_CODEC);
         interaction.register("ChangeBlock", ClaimChangeBlockInteraction.class, ClaimChangeBlockInteraction.CUSTOM_CODEC);
+        interaction.register("HarvestCrop", ClaimHarvestCropBlockInteraction.class, ClaimHarvestCropBlockInteraction.CUSTOM_CODEC);
 
         partyInactivityTickingSystem = new PartyInactivityThread();
         partyInactivityTickingSystem.start();
