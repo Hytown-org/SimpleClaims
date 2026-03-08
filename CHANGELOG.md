@@ -1,3 +1,8 @@
+# 1.0.32
+
+* Add UI translations + Italian translation - Lumengrid
+* Removed title showing in blacklisted worlds, closes #220
+
 # 1.0.31
 
 * Fixed using the wrong interaction for the sickle interaction

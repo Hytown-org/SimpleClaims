@@ -9,15 +9,15 @@
     }
   ],
   "Website": "${website}",
-  "ServerVersion": "*",
+  "ServerVersion": "2026.02.17-255364b8e",
   "Dependencies": {
     "Hytale:EntityModule": "*",
-    "Hytale:InteractionModule": "*"
+    "Hytale:InteractionModule": "*",
+    "Hytale:Farming": "*"
   },
   "OptionalDependencies": {
     "LuckPerms:LuckPerms": "*",
-    "HelpChat:PlaceholderAPI": "*",
-    "Hytale:Farming": "*"
+    "HelpChat:PlaceholderAPI": "*"
   },
   "DisabledByDefault": false,
   "Main": "${entry_point}",
