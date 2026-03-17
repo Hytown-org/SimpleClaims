@@ -11,6 +11,7 @@ errors.simpleclaims.noPendingInvites = You don't have any pending invites
 errors.simpleclaims.cantClaimInThisDimension = You can't claim chunks in this dimension
 errors.simpleclaims.chunkNotAdjacent = You can only claim chunks that are adjacent to your claimed chunks
 errors.simpleclaims.chunkReservedByOtherParty = You can't claim chunks that are adjacent to other parties
+errors.simpleclaims.commandBlockedInClaim = This command is blocked inside this claim
 
 simpleclaims.partyCreated = Party Created
 info.simpleclaims.unclaimed = Chunk unclaimed

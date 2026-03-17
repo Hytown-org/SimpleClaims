@@ -8,6 +8,7 @@ errors.simpleclaims.notYourClaim = Dieser Chunk gehört nicht zu deiner Gruppe
 errors.simpleclaims.notEnoughChunks = Deine Gruppe hat nicht genug Chunks, um diesen zu beanspruchen
 errors.simpleclaims.playerNotFound = Spieler nicht gefunden
 errors.simpleclaims.cantClaimInThisDimension = Du kannst keine Chunks in dieser Dimension beanspruchen
+errors.simpleclaims.commandBlockedInClaim = This command is blocked inside this claim
 
 simpleclaims.partyCreated = Gruppe erstellt
 info.simpleclaims.unclaimed = Chunk freigegeben

@@ -11,6 +11,7 @@ import com.buuz135.simpleclaims.papi.PAPIIntegration;
 import com.buuz135.simpleclaims.systems.events.*;
 import com.buuz135.simpleclaims.systems.tick.*;
 import com.buuz135.simpleclaims.util.PartyInactivityThread;
+import com.buuz135.simpleclaims.util.CommandBlacklistPacketAdapters;
 import com.buuz135.simpleclaims.util.WindowExtraResourcesState;
 import com.buuz135.simpleclaims.util.WindowPacketAdapters;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -72,6 +73,7 @@ public class Main extends JavaPlugin {
         IWorldMapProvider.CODEC.register(SimpleClaimsWorldMapProvider.ID, SimpleClaimsWorldMapProvider.class, SimpleClaimsWorldMapProvider.CODEC);
 
         WindowPacketAdapters.install();
+        CommandBlacklistPacketAdapters.install();
         ClaimManager.getInstance();
 
         this.getEventRegistry().registerGlobal(AddWorldEvent.class, (event) -> {
@@ -125,6 +127,7 @@ public class Main extends JavaPlugin {
     @Override
     protected void shutdown() {
         super.shutdown();
+        CommandBlacklistPacketAdapters.uninstall();
         WindowPacketAdapters.uninstall();
     }
 

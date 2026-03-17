@@ -8,6 +8,7 @@ errors.simpleclaims.notYourClaim = Ez a terület nem a partyd tulajdona
 errors.simpleclaims.notEnoughChunks = A partydnak nincs elég levédhetö területe ehhez
 errors.simpleclaims.playerNotFound = Játékos nem található
 errors.simpleclaims.cantClaimInThisDimension = Ebben a dimenzióban nem lehet területet levédeni
+errors.simpleclaims.commandBlockedInClaim = This command is blocked inside this claim
 
 simpleclaims.partyCreated = Party létrehozva
 info.simpleclaims.unclaimed = Terület felszabaditva

@@ -57,6 +57,7 @@ public class CommandMessages {
     public static final Message NO_PERMISSION = Message.translation("commands.errors.simpleclaims.noPermission").color(Color.RED).bold(true);
     public static final Message NO_PENDING_INVITES = Message.translation("commands.errors.simpleclaims.noPendingInvites").color(Color.RED).bold(true);
     public static final Message ENTRY_DENIED = Message.translation("commands.info.simpleclaims.entryDenied").color(Color.RED).bold(true);
+    public static final Message COMMAND_BLOCKED_IN_CLAIM = Message.translation("commands.errors.simpleclaims.commandBlockedInClaim").color(Color.RED).bold(true);
 
     public static final Message CHUNK_NOT_ADJACENT = Message.translation("commands.errors.simpleclaims.chunkNotAdjacent").color(Color.RED).bold(true);
     public static final Message CHUNK_RESERVED_BY_OTHER_PARTY = Message.translation("commands.errors.simpleclaims.chunkReservedByOtherParty").color(Color.RED).bold(true);

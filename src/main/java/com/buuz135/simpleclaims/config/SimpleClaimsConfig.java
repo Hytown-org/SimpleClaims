@@ -24,6 +24,7 @@ public class SimpleClaimsConfig {
     private boolean DefaultPartyInteractBench = false;
     private boolean DefaultPartyInteractChair = false;
     private boolean DefaultPartyInteractPortal = false;
+    private boolean DefaultPartyCommandBlacklistEnabled = false;
 
     private boolean AllowPartyPVPSetting = true;
     private boolean AllowPartyFriendlyFireSetting = true;
@@ -36,6 +37,7 @@ public class SimpleClaimsConfig {
     private boolean AllowPartyInteractBenchSetting = true;
     private boolean AllowPartyInteractChairSetting = true;
     private boolean AllowPartyInteractPortalSetting = true;
+    private boolean AllowPartyCommandBlacklistSetting = true;
 
     private String[] ClaimCommandAliases = new String[]{"sc", "sc-chunks", "scc", "chunk", "chunks", "claim", "claims"};
     private String[] WorldNameBlacklistForClaiming = new String[0];
@@ -54,6 +56,8 @@ public class SimpleClaimsConfig {
     private boolean ShowPerimeterReservationOnTheMap = false;
 
     private String[] BlocksThatIgnoreInteractRestrictions = new String[]{"gravestone"};
+    // Supports exact command tokens (e.g. "/home") and wildcard prefixes (e.g. "/home*").
+    private String[] BlockedCommandsInClaims = new String[]{"/tpa", "/sethome"};
 
     public SimpleClaimsConfig() {
 
@@ -195,12 +199,24 @@ public class SimpleClaimsConfig {
         return AllowPartyInteractPortalSetting;
     }
 
+    public boolean isDefaultPartyCommandBlacklistEnabled() {
+        return DefaultPartyCommandBlacklistEnabled;
+    }
+
+    public boolean isAllowPartyCommandBlacklistSetting() {
+        return AllowPartyCommandBlacklistSetting;
+    }
+
     public boolean isEnableParticleBorders() {
         return EnableParticleBorders;
     }
 
     public String[] getBlocksThatIgnoreInteractRestrictions() {
         return BlocksThatIgnoreInteractRestrictions;
+    }
+
+    public String[] getBlockedCommandsInClaims() {
+        return BlockedCommandsInClaims;
     }
 
     public int getMaxPartyMembers() {

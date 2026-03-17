@@ -179,6 +179,10 @@ $C.@PageOverlay {
             @Text = %ui.simpleclaims.party.partyPvp;
             Padding: (Bottom: 4);
           }
+          $C.@CheckBoxWithLabel #CommandBlacklistSetting {
+            @Text = "Block Blacklisted Commands";
+            Padding: (Bottom: 4);
+          }
         }
 
        Group #Separator{

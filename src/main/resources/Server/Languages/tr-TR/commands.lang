@@ -8,6 +8,7 @@ errors.simpleclaims.notYourClaim = Bu chunk partine ait degil
 errors.simpleclaims.notEnoughChunks = Partinin chunk hakki yetersiz
 errors.simpleclaims.playerNotFound = Oyuncu bulunamadi
 errors.simpleclaims.cantClaiminThisDimension = Bu boyutta chunk sahiplenemezsin
+errors.simpleclaims.commandBlockedInClaim = This command is blocked inside this claim
 
 simpleclaims.partyCreated = Parti olusturuldu
 info.simpleclaims.unclaimed = Chunk sahipligi kaldirildi

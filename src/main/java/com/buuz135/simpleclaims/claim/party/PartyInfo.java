@@ -300,6 +300,14 @@ public class PartyInfo {
         return Main.CONFIG.get().isDefaultPartyInteractPortal();
     }
 
+    public boolean isCommandBlacklistEnabled() {
+        var override = this.getOverride(PartyOverrides.PARTY_PROTECTION_COMMAND_BLACKLIST);
+        if (override != null) {
+            return (Boolean) override.getValue().getTypedValue();
+        }
+        return Main.CONFIG.get().isDefaultPartyCommandBlacklistEnabled();
+    }
+
     public void setOverride(PartyOverride override){
         // Remove override if it matches default value (optimization)
         if (override.getType().equals(PartyOverrides.CLAIM_CHUNK_AMOUNT)
@@ -316,6 +324,11 @@ public class PartyInfo {
         // Remove BONUS_CLAIM_CHUNKS if it's 0
         if (override.getType().equals(PartyOverrides.BONUS_CLAIM_CHUNKS)
                 && (int) override.getValue().tryGetTypedValue().orElse(0) == 0) {
+            overrideMap.remove(override.getType());
+            return;
+        }
+        if (override.getType().equals(PartyOverrides.PARTY_PROTECTION_COMMAND_BLACKLIST)
+                && (boolean) override.getValue().tryGetTypedValue().orElse(false) == Main.CONFIG.get().isDefaultPartyCommandBlacklistEnabled()) {
             overrideMap.remove(override.getType());
             return;
         }
