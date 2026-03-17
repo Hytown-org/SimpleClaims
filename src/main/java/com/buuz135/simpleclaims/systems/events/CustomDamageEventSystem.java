@@ -14,6 +14,7 @@ import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.protocol.Transform;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.entity.knockback.KnockbackComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
 import com.hypixel.hytale.server.core.modules.entity.player.PlayerSettings;
@@ -44,8 +45,10 @@ public class CustomDamageEventSystem extends DamageEventSystem {
                     var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) transform.getX(), (int) transform.getZ());
                     if (chunk != null) {
                         var partyInfo = ClaimManager.getInstance().getPartyById(chunk.getPartyOwner());
-                        if (partyInfo != null && !partyInfo.isPVPEnabled()) {
+                        if (partyInfo != null && !partyInfo.isPVPEnabled() && "Hytown Official".equals(partyInfo.getName())) {
                             damage.setCancelled(true);
+                            damage.setAmount(0);
+                            killKnockback(damage, ref, store);
                         }
                     }
                     if (!damage.isCancelled()) {
@@ -55,11 +58,30 @@ public class CustomDamageEventSystem extends DamageEventSystem {
                             var victimParty = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                             if (attackerParty != null && victimParty != null && attackerParty.getId().equals(victimParty.getId()) && !attackerParty.isFriendlyFireEnabled()) {
                                 damage.setCancelled(true);
+                                damage.setAmount(0);
+                                killKnockback(damage, ref, store);
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    // kill knockback from both the damage meta and the entity itself
+    // need both because shield bash sets it on the entity before the damage event fires
+    private void killKnockback(Damage damage, Ref<EntityStore> ref, Store<EntityStore> store) {
+        KnockbackComponent metaKb = damage.getMetaObject(Damage.KNOCKBACK_COMPONENT);
+        if (metaKb != null) {
+            metaKb.setVelocity(Vector3d.ZERO);
+            metaKb.setDuration(0);
+        }
+        damage.removeMetaObject(Damage.KNOCKBACK_COMPONENT);
+
+        KnockbackComponent entityKb = store.getComponent(ref, KnockbackComponent.getComponentType());
+        if (entityKb != null) {
+            entityKb.setVelocity(Vector3d.ZERO);
+            entityKb.setDuration(0);
         }
     }
 
