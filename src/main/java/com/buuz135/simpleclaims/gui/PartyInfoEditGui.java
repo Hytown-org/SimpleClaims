@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class PartyInfoEditGui extends InteractiveCustomUIPage<PartyInfoEditGui.PartyInfoData> {
-
     private final PartyInfo info;
     private String name;
     private String description;

@@ -17,6 +17,7 @@ public class SimpleClaimsConfig {
     private boolean DefaultPartyBlockBreakEnabled = false;
     private boolean DefaultPartyBlockInteractEnabled = false;
     private boolean DefaultPartyPVPEnabled = false;
+    private boolean DefaultWildernessPVPEnabled = false;
     private boolean DefaultPartyFriendlyFireEnabled = false;
     private boolean DefaultPartyAllowEntry = true;
     private boolean DefaultPartyInteractChest = false;
@@ -41,7 +42,7 @@ public class SimpleClaimsConfig {
 
     private String[] ClaimCommandAliases = new String[]{"sc", "sc-chunks", "scc", "chunk", "chunks", "claim", "claims"};
     private String[] WorldNameBlacklistForClaiming = new String[0];
-    private String TitleTopClaimTitleText = "Simple Claims";
+    private String TitleTopClaimTitleText = "HyTown";
     private String WildernessName = "Wilderness";
     private String[] FullWorldProtection = new String[0];
     private boolean EnableAlloyEntryTesting = false;
@@ -101,6 +102,10 @@ public class SimpleClaimsConfig {
 
     public boolean isDefaultPartyPVPEnabled() {
         return DefaultPartyPVPEnabled;
+    }
+
+    public boolean isDefaultWildernessPVPEnabled() {
+        return DefaultWildernessPVPEnabled;
     }
 
     public boolean isDefaultPartyFriendlyFireEnabled() {

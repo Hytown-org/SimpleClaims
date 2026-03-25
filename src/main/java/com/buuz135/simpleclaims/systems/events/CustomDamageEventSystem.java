@@ -1,5 +1,6 @@
 package com.buuz135.simpleclaims.systems.events;
 
+import com.buuz135.simpleclaims.Main;
 import com.buuz135.simpleclaims.claim.ClaimManager;
 import com.buuz135.simpleclaims.claim.party.PartyInfo;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -41,9 +42,14 @@ public class CustomDamageEventSystem extends DamageEventSystem {
             if (attackerRef.isValid()) {
                 Player attackerPlayerComponent = (Player) commandBuffer.getComponent(attackerRef, Player.getComponentType());
                 if (attackerPlayerComponent != null) { //The source is a player
-                    // && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), (int) transform.getX(), (int) transform.getZ(), PartyInfo::isPVPEnabled)) {
                     var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) transform.getX(), (int) transform.getZ());
-                    if (chunk != null) {
+                    if (chunk == null) {
+                        if (!Main.CONFIG.get().isDefaultWildernessPVPEnabled()) {
+                            damage.setCancelled(true);
+                            damage.setAmount(0);
+                            killKnockback(damage, ref, store);
+                        }
+                    } else {
                         var partyInfo = ClaimManager.getInstance().getPartyById(chunk.getPartyOwner());
                         if (partyInfo != null && !partyInfo.isPVPEnabled() && "Hytown Official".equals(partyInfo.getName())) {
                             damage.setCancelled(true);

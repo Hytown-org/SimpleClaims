@@ -13,7 +13,6 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 public final class WindowPacketAdapters {
-
     private WindowPacketAdapters() {}
 
     private static PacketFilter installed;
@@ -29,6 +28,10 @@ public final class WindowPacketAdapters {
 
             if (serverPacket instanceof OpenWindow ow) {
                 ExtraResources primed = ch.attr(WindowExtraResourcesState.NEXT_OPEN_EXTRA).getAndSet(null);
+                System.out.println("[TEMP-CLAIMS-DEBUG][SimpleClaims][WindowPacketAdapters] OpenWindow player="
+                        + playerRef.getUsername()
+                        + " windowId=" + ow.id
+                        + " primedExtra=" + (primed != null));
                 if (primed != null) {
                     ow.extraResources = primed;
 
@@ -54,6 +57,10 @@ public final class WindowPacketAdapters {
 
                     ExtraResources forced = map.get(id);
                     if (forced != null) {
+                        System.out.println("[TEMP-CLAIMS-DEBUG][SimpleClaims][WindowPacketAdapters] UpdateWindow player="
+                                + playerRef.getUsername()
+                                + " windowId=" + id
+                                + " forcedExtra=true");
                         getUpdateExtraField(cls).set(serverPacket, forced);
                     }
                 } catch (Throwable ignored) {}
@@ -61,6 +68,9 @@ public final class WindowPacketAdapters {
             }
 
             if (serverPacket instanceof CloseWindow cw) {
+                System.out.println("[TEMP-CLAIMS-DEBUG][SimpleClaims][WindowPacketAdapters] CloseWindow player="
+                        + playerRef.getUsername()
+                        + " windowId=" + cw.id);
                 var map = ch.attr(WindowExtraResourcesState.EXTRA_BY_WINDOW_ID).get();
                 if (map != null) map.remove(cw.id);
 

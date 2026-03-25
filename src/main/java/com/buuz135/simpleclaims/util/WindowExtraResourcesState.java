@@ -37,4 +37,25 @@ public final class WindowExtraResourcesState {
         }
         return m;
     }
+
+    public static void clear(Channel ch) {
+        ch.attr(NEXT_OPEN_EXTRA).set(null);
+
+        Map<Integer, ExtraResources> map = ch.attr(EXTRA_BY_WINDOW_ID).get();
+        int mapSize = map != null ? map.size() : 0;
+        if (map != null) {
+            map.clear();
+        }
+
+        Set<Integer> benchIds = ch.attr(BENCH_WINDOW_IDS).get();
+        int benchSize = benchIds != null ? benchIds.size() : 0;
+        if (benchIds != null) {
+            benchIds.clear();
+        }
+
+        System.out.println("[TEMP-CLAIMS-DEBUG][SimpleClaims][WindowExtraResourcesState] clear channel="
+                + ch.id()
+                + " extraMapSize=" + mapSize
+                + " benchIdCount=" + benchSize);
+    }
 }

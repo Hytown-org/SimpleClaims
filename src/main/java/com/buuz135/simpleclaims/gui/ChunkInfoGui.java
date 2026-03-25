@@ -31,7 +31,6 @@ import java.awt.*;
 import java.util.concurrent.CompletableFuture;
 
 public class ChunkInfoGui extends InteractiveCustomUIPage<ChunkInfoGui.ChunkInfoData> {
-
     private final int chunkX;
     private final int chunkZ;
     private final String dimension;

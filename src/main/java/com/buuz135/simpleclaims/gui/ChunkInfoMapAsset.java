@@ -33,7 +33,7 @@ public class ChunkInfoMapAsset extends CommonAsset {
 
     // "Buuz135_SimpleClaims" in hex padded with 2 zeros at the start and then padded to 64 characters at the end
     private static final String HASH = "004275757a3133355f53696d706c65436c61696d730000000000000000000000";
-    private static final String PATH = "UI/Custom/SimpleClaims/Map.png";
+    private static final String PATH = "UI/Custom/HyTown/Assets/Claims/Map.png";
 
     private final byte[] data;
 

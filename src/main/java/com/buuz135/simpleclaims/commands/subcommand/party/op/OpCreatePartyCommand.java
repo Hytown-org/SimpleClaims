@@ -2,10 +2,12 @@ package com.buuz135.simpleclaims.commands.subcommand.party.op;
 
 import com.buuz135.simpleclaims.claim.ClaimManager;
 import com.buuz135.simpleclaims.commands.CommandMessages;
-import com.buuz135.simpleclaims.gui.PartyInfoEditGui;
+import com.buuz135.simpleclaims.ui.SimpleClaimsUiHost;
+import com.buuz135.simpleclaims.ui.SimpleClaimsUiHostRegistry;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.GameMode;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
@@ -19,6 +21,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
+import java.awt.Color;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -54,7 +57,12 @@ public class OpCreatePartyCommand extends AbstractAsyncCommand {
                         party.setOwner(UUID.randomUUID());
                         party.setMembers(new UUID[]{});
                         player.sendMessage(CommandMessages.PARTY_CREATED);
-                        player.getPageManager().openCustomPage(ref, store, new PartyInfoEditGui(playerRef, party, true));
+                        SimpleClaimsUiHost host = SimpleClaimsUiHostRegistry.get();
+                        if (host != null) {
+                            host.openPartyEditor(player, playerRef, ref, store, party, true);
+                            return;
+                        }
+                        playerRef.sendMessage(Message.raw("HyTown claims UI is unavailable.").color(Color.RED).bold(true));
                     }
                 }, world);
             } else {

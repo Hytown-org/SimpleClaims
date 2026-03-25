@@ -8,9 +8,11 @@ import com.buuz135.simpleclaims.commands.subcommand.party.PartyInviteCommand;
 import com.buuz135.simpleclaims.commands.subcommand.party.PartyLeaveCommand;
 import com.buuz135.simpleclaims.commands.subcommand.party.ChatToggleCommand;
 import com.buuz135.simpleclaims.commands.subcommand.party.op.*;
-import com.buuz135.simpleclaims.gui.PartyInfoEditGui;
+import com.buuz135.simpleclaims.ui.SimpleClaimsUiHost;
+import com.buuz135.simpleclaims.ui.SimpleClaimsUiHostRegistry;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
@@ -20,12 +22,12 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
+import java.awt.Color;
 import java.util.concurrent.CompletableFuture;
 
 import static com.hypixel.hytale.server.core.command.commands.player.inventory.InventorySeeCommand.MESSAGE_COMMANDS_ERRORS_PLAYER_NOT_IN_WORLD;
 
 public class SimpleClaimsPartyCommand extends AbstractAsyncCommand {
-
     public SimpleClaimsPartyCommand() {
         super("simpleclaimsparty", "Simple Claims Party Commands" );
         this.addAliases(Main.CONFIG.get().getPartyCommandAliases());
@@ -62,7 +64,12 @@ public class SimpleClaimsPartyCommand extends AbstractAsyncCommand {
                             commandContext.sendMessage(CommandMessages.NOT_IN_A_PARTY);
                             return;
                         }
-                        player.getPageManager().openCustomPage(ref, store, new PartyInfoEditGui(playerRef, party, false));
+                        SimpleClaimsUiHost host = SimpleClaimsUiHostRegistry.get();
+                        if (host != null) {
+                            host.openPartyEditor(player, playerRef, ref, store, party, false);
+                            return;
+                        }
+                        playerRef.sendMessage(Message.raw("HyTown claims UI is unavailable.").color(Color.RED).bold(true));
                     }
                 }, world);
             } else {
