@@ -96,7 +96,7 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
 
             map.put(scw.getId(), section.toPacket());
             lastHash.put(scw, hash);
-
+            WindowReflection.invalidate(scw);
             if (initialized.add(scw)) {
                 WindowReflection.invalidate(scw);
                 // start throttle window after first init
