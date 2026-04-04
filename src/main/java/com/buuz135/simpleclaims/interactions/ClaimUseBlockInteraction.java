@@ -73,6 +73,9 @@ public class ClaimUseBlockInteraction extends UseBlockInteraction {
         } else if (blockName.contains("portal") || blockName.contains("teleporter")) {
             defaultInteract = PartyInfo::isPortalInteractEnabled;
             permission = PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL;
+        } else if (blockName.contains("egg")) {
+            defaultInteract = PartyInfo::isEggInteractEnabled;
+            permission = PartyOverrides.PARTY_PROTECTION_INTERACT_EGG;
         }
         if (ignored || (playerRef != null && ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), targetBlock.getX(), targetBlock.getZ(), defaultInteract, permission))) {
             super.interactWithBlock(world, commandBuffer, type, context, itemInHand, targetBlock, cooldownHandler);
@@ -114,6 +117,9 @@ public class ClaimUseBlockInteraction extends UseBlockInteraction {
         } else if (blockName.contains("portal") || blockName.contains("teleporter")) {
             defaultInteract = PartyInfo::isPortalInteractEnabled;
             permission = PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL;
+        } else if (blockName.contains("egg")) {
+            defaultInteract = PartyInfo::isEggInteractEnabled;
+            permission = PartyOverrides.PARTY_PROTECTION_INTERACT_EGG;
         }
         if (ignored || (playerRef != null && ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), targetBlock.getX(), targetBlock.getZ(), defaultInteract, permission))) {
             super.simulateInteractWithBlock(type, context, itemInHand, world, targetBlock);

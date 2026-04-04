@@ -300,6 +300,14 @@ public class PartyInfo {
         return Main.CONFIG.get().isDefaultPartyInteractPortal();
     }
 
+    public boolean isEggInteractEnabled() {
+        var override = this.getOverride(PartyOverrides.PARTY_PROTECTION_INTERACT_EGG);
+        if (override != null) {
+            return (Boolean) override.getValue().getTypedValue();
+        }
+        return Main.CONFIG.get().isDefaultPartyInteractEgg();
+    }
+
     public boolean isCommandBlacklistEnabled() {
         var override = this.getOverride(PartyOverrides.PARTY_PROTECTION_COMMAND_BLACKLIST);
         if (override != null) {

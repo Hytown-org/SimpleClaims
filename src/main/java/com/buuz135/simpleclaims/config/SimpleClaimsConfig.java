@@ -17,6 +17,7 @@ public class SimpleClaimsConfig {
     private boolean DefaultPartyBlockBreakEnabled = false;
     private boolean DefaultPartyBlockInteractEnabled = false;
     private boolean DefaultPartyPVPEnabled = false;
+    private boolean DefaultWildernessPVPEnabled = false;
     private boolean DefaultPartyFriendlyFireEnabled = false;
     private boolean DefaultPartyAllowEntry = true;
     private boolean DefaultPartyInteractChest = false;
@@ -37,6 +38,8 @@ public class SimpleClaimsConfig {
     private boolean AllowPartyInteractBenchSetting = true;
     private boolean AllowPartyInteractChairSetting = true;
     private boolean AllowPartyInteractPortalSetting = true;
+    private boolean DefaultPartyInteractEgg = true;
+    private boolean AllowPartyInteractEggSetting = true;
     private boolean AllowPartyCommandBlacklistSetting = true;
 
     private String[] ClaimCommandAliases = new String[]{"sc", "sc-chunks", "scc", "chunk", "chunks", "claim", "claims"};
@@ -55,7 +58,7 @@ public class SimpleClaimsConfig {
     private boolean EnablePerimeterReservation = false;
     private boolean ShowPerimeterReservationOnTheMap = false;
 
-    private String[] BlocksThatIgnoreInteractRestrictions = new String[]{"gravestone"};
+    private String[] BlocksThatIgnoreInteractRestrictions = new String[]{"gravestone", "lootchest"};
     // Supports exact command tokens (e.g. "/home") and wildcard prefixes (e.g. "/home*").
     private String[] BlockedCommandsInClaims = new String[]{"/tpa", "/sethome"};
 
@@ -101,6 +104,10 @@ public class SimpleClaimsConfig {
 
     public boolean isDefaultPartyPVPEnabled() {
         return DefaultPartyPVPEnabled;
+    }
+
+    public boolean isDefaultWildernessPVPEnabled() {
+        return DefaultWildernessPVPEnabled;
     }
 
     public boolean isDefaultPartyFriendlyFireEnabled() {
@@ -197,6 +204,14 @@ public class SimpleClaimsConfig {
 
     public boolean isAllowPartyInteractPortalSetting() {
         return AllowPartyInteractPortalSetting;
+    }
+
+    public boolean isDefaultPartyInteractEgg() {
+        return DefaultPartyInteractEgg;
+    }
+
+    public boolean isAllowPartyInteractEggSetting() {
+        return AllowPartyInteractEggSetting;
     }
 
     public boolean isDefaultPartyCommandBlacklistEnabled() {
