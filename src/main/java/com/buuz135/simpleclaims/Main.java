@@ -114,6 +114,7 @@ public class Main extends JavaPlugin {
         //interaction.register("Replace", ClaimReplaceInteraction.class, ClaimReplaceInteraction.CUSTOM_CODEC);
         interaction.register("ChangeBlock", ClaimChangeBlockInteraction.class, ClaimChangeBlockInteraction.CUSTOM_CODEC);
         interaction.register("HarvestCrop", ClaimHarvestCropBlockInteraction.class, ClaimHarvestCropBlockInteraction.CUSTOM_CODEC);
+        interaction.register("UseCaptureCrate", ClaimUseCaptureCrateInteraction.class, ClaimUseCaptureCrateInteraction.CUSTOM_CODEC);
 
         partyInactivityTickingSystem = new PartyInactivityThread();
         partyInactivityTickingSystem.start();
