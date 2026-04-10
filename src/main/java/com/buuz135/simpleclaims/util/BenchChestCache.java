@@ -3,10 +3,13 @@ package com.buuz135.simpleclaims.util;
 import com.buuz135.simpleclaims.claim.ClaimManager;
 import com.buuz135.simpleclaims.claim.party.PartyInfo;
 import com.buuz135.simpleclaims.claim.party.PartyOverrides;
+import com.hypixel.hytale.component.Holder;
+import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
+import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,10 +81,16 @@ public final class BenchChestCache {
                 if (!allowedCols[xi * size + zi]) continue;
 
                 for (int y = by - v; y <= by + v; y++) {
-                    var state = world.getState(x, y, z, true);
-                    if (!(state instanceof ItemContainerState chest)) continue;
+                    var worldChunk = world.getChunk(ChunkUtil.indexChunkFromBlock(x, z));
+                    if (worldChunk == null) continue;
+                    var ref = worldChunk.getBlockComponentEntity(x, y, z);
 
-                    ItemContainer c = chest.getItemContainer();
+                    if (ref == null) continue;
+
+                    var component = ref.getStore().getComponent(ref, ItemContainerBlock.getComponentType());
+                    if (component == null) continue;
+
+                    ItemContainer c = component.getItemContainer();
                     if (unique.add(c)) {
                         allowed.add(c);
                         if (allowed.size() >= limit) return allowed;

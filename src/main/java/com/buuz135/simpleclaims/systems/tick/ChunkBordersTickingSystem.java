@@ -100,7 +100,7 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
                 for (double z = minZ; z <= maxZ; z += 0.5) {
                     if (Math.abs(playerPos.getZ() - z) < threshold && random.nextBoolean()) {
                         var pos = new Vector3d(minX, playerY, z + randomOffset());
-                        ObjectList<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
+                        List<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
                         playerSpatialResource.getSpatialStructure().collect(playerPos, (double) 75.0F, playerRefs);
                         ParticleUtil.spawnParticleEffect(particleName, pos
                                 , 0f, 0f, 0f, 1f, particleColor, playerRefs,
@@ -115,7 +115,7 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
                 for (double z = minZ; z <= maxZ; z += 0.5) {
                     if (Math.abs(playerPos.getZ() - z) < threshold && random.nextBoolean()) {
                         var pos = new Vector3d(maxX, playerY, z + randomOffset());
-                        ObjectList<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
+                        List<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
                         playerSpatialResource.getSpatialStructure().collect(playerPos, (double) 75.0F, playerRefs);
                         ParticleUtil.spawnParticleEffect(particleName, pos
                                 , 0f, 0f, 0f, 1f, particleColor, playerRefs,
@@ -130,7 +130,7 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
                 for (double x = minX; x <= maxX; x += 0.5) {
                     if (Math.abs(playerPos.getX() - x) < threshold && random.nextBoolean()) {
                         var pos = new Vector3d(x + randomOffset(), playerY, minZ);
-                        ObjectList<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
+                        List<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
                         playerSpatialResource.getSpatialStructure().collect(playerPos, (double) 75.0F, playerRefs);
                         ParticleUtil.spawnParticleEffect(particleName, pos
                                 , 0f, 0f, 0f, 1f, particleColor, playerRefs,
@@ -145,7 +145,7 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
                 for (double x = minX; x <= maxX; x += 0.5) {
                     if (Math.abs(playerPos.getX() - x) < threshold && random.nextBoolean()) {
                         var pos = new Vector3d(x + randomOffset(), playerY, maxZ);
-                        ObjectList<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
+                        List<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
                         playerSpatialResource.getSpatialStructure().collect(playerPos, (double) 75.0F, playerRefs);
                         ParticleUtil.spawnParticleEffect(particleName, pos
                                 , 0f, 0f, 0f, 1f, particleColor, playerRefs,

@@ -1,3 +1,11 @@
+# 1.0.34
+
+* Fixed workbenches not consuming items properly (with the help of oskar)
+
+# 1.0.33
+
+* Updated to Hytale Update 4
+
 # 1.0.32
 
 * Add UI translations + Italian translation - Lumengrid

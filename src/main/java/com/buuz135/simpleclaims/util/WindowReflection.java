@@ -1,6 +1,6 @@
 package com.buuz135.simpleclaims.util;
 
-import com.hypixel.hytale.builtin.crafting.state.BenchState;
+import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
 import com.hypixel.hytale.builtin.crafting.window.BenchWindow;
 import com.hypixel.hytale.server.core.entity.entities.player.windows.MaterialExtraResourcesSection;
 import com.hypixel.hytale.server.core.entity.entities.player.windows.Window;
@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 public final class WindowReflection {
     private WindowReflection() {}
 
-    public static final Field BENCHSTATE_FIELD = field(BenchWindow.class, "benchState");
+    public static final Field BENCHSTATE_FIELD = field(BenchWindow.class, "benchBlock");
     public static final Field EXTRARES_FIELD = field(BenchWindow.class, "extraResourcesSection");
     public static final Method INVALIDATE_METHOD = method(Window.class, "invalidate");
 
@@ -35,8 +35,10 @@ public final class WindowReflection {
         }
     }
 
-    public static BenchState getBenchState(BenchWindow bw) {
-        try { return (BenchState) BENCHSTATE_FIELD.get(bw); }
+    public static BenchBlock getBenchBlock(BenchWindow bw) {
+        try {
+            return (BenchBlock) BENCHSTATE_FIELD.get(bw);
+        }
         catch (Exception e) { throw new RuntimeException(e); }
     }
 

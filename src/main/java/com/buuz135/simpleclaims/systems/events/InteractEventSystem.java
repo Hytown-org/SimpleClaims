@@ -7,7 +7,8 @@ import com.buuz135.simpleclaims.claim.party.PartyOverrides;
 import com.buuz135.simpleclaims.systems.tick.CraftingUiQuantitiesSystem;
 import com.buuz135.simpleclaims.util.BenchChestCache;
 import com.buuz135.simpleclaims.util.WindowExtraResourcesState;
-import com.hypixel.hytale.builtin.crafting.state.BenchState;
+import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
+import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
@@ -18,6 +19,7 @@ import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.protocol.ExtraResources;
 import com.hypixel.hytale.protocol.ItemQuantity;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.bench.Bench;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.windows.MaterialExtraResourcesSection;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
@@ -98,13 +100,16 @@ public class InteractEventSystem extends EntityEventSystem<EntityStore, UseBlock
     private static ExtraResources buildExtraResourcesForBench(World world, PlayerRef playerRef, int bx, int by, int bz) {
         var chests = BenchChestCache.getAllowedChests(world, playerRef, bx, by, bz);
 
-        BenchState benchState = null;
-        var st = world.getState(bx, by, bz, true);
-        if (st instanceof BenchState bs) benchState = bs;
+        var holder = world.getBlockComponentHolder(bx, by, bz);
+        if (holder == null) return null;
+        var block = world.getBlockType(bx, by, bz);
+        if (block == null) return null;
+        var bench = block.getBench();
+        if (bench == null) return null;
+        var benchBlock = holder.getComponent(BenchBlock.getComponentType());
+        if (benchBlock == null) return null;
 
-        if (benchState == null) return null;
-
-        ItemQuantity[] counts = CraftingUiQuantitiesSystem.computeCounts(benchState, chests);
+        ItemQuantity[] counts = CraftingUiQuantitiesSystem.computeCounts(bench, benchBlock.getTierLevel(), chests);
         ItemContainer uiContainer = CraftingUiQuantitiesSystem.buildUiContainer(chests);
 
         MaterialExtraResourcesSection section = new MaterialExtraResourcesSection();

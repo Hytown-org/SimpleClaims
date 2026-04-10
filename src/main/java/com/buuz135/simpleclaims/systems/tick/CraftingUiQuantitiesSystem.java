@@ -3,7 +3,9 @@ package com.buuz135.simpleclaims.systems.tick;
 import com.buuz135.simpleclaims.util.BenchChestCache;
 import com.buuz135.simpleclaims.util.WindowExtraResourcesState;
 import com.buuz135.simpleclaims.util.WindowReflection;
-import com.hypixel.hytale.builtin.crafting.state.BenchState;
+
+import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
+import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.builtin.crafting.window.SimpleCraftingWindow;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -12,6 +14,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.protocol.ItemQuantity;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.bench.Bench;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.windows.MaterialExtraResourcesSection;
 import com.hypixel.hytale.server.core.entity.entities.player.windows.Window;
@@ -68,14 +71,19 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
                 nextAllowedMs.put(scw, now + 500L);
             }
 
-            BenchState benchState = WindowReflection.getBenchState(scw);
+            BenchBlock benchBlock = WindowReflection.getBenchBlock(scw);
 
-            int bx = benchState.getBlockPosition().x;
-            int by = benchState.getBlockPosition().y;
-            int bz = benchState.getBlockPosition().z;
+            int bx = scw.getX();
+            int by = scw.getY();
+            int bz = scw.getZ();
+
+            var block = world.getBlockType(bx, by, bz);
+            if (block == null) continue;
+            var bench = block.getBench();
+            if (bench == null) continue;
 
             List<ItemContainer> chests = BenchChestCache.getAllowedChests(world, playerRef, bx, by, bz);
-            ItemQuantity[] counts = computeCounts(benchState, chests);
+            ItemQuantity[] counts = computeCounts(bench, benchBlock.getTierLevel(), chests);
             int hash = fingerprintCounts(counts);
 
             Integer prev = lastHash.get(scw);
@@ -88,7 +96,7 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
 
             map.put(scw.getId(), section.toPacket());
             lastHash.put(scw, hash);
-
+            WindowReflection.invalidate(scw);
             if (initialized.add(scw)) {
                 WindowReflection.invalidate(scw);
                 // start throttle window after first init
@@ -101,13 +109,13 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
         initialized.removeIf(win -> !windows.contains(win));
     }
 
-    public static ItemQuantity[] computeCounts(BenchState benchState, List<ItemContainer> chests) {
+    public static ItemQuantity[] computeCounts(Bench bench, int tierLevel, List<ItemContainer> chests) {
         var materials = new Object2ObjectOpenHashMap<String, ItemQuantity>();
 
         for (ItemContainer chest : chests) {
             chest.forEach((slot, stack) -> {
                 if (stack == null || stack.isEmpty()) return;
-                if (isValidUpgradeMaterialForBench(benchState, stack) || isValidCraftingMaterialForBench(benchState, stack)) {
+                if (isValidUpgradeMaterialForBench(bench, tierLevel, stack) || isValidCraftingMaterialForBench(bench, stack)) {
                     ItemQuantity q = materials.computeIfAbsent(stack.getItemId(), k -> new ItemQuantity(stack.getItemId(), 0));
                     q.quantity += stack.getQuantity();
                 }

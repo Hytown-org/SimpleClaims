@@ -8,11 +8,13 @@ import com.hypixel.hytale.protocol.packets.setup.AssetFinalize;
 import com.hypixel.hytale.protocol.packets.setup.AssetInitialize;
 import com.hypixel.hytale.protocol.packets.setup.AssetPart;
 import com.hypixel.hytale.protocol.packets.setup.RequestCommonAssetsRebuild;
+import com.hypixel.hytale.protocol.packets.worldmap.MapImage;
 import com.hypixel.hytale.server.core.asset.common.CommonAsset;
 import com.hypixel.hytale.server.core.asset.common.CommonAssetRegistry;
 import com.hypixel.hytale.server.core.io.PacketHandler;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.chunk.palette.BitFieldArr;
 import com.hypixel.hytale.server.core.universe.world.worldmap.provider.chunk.ChunkWorldMap;
 import it.unimi.dsi.fastutil.longs.LongArraySet;
 
@@ -77,7 +79,7 @@ public class ChunkInfoMapAsset extends CommonAsset {
                     var index = ChunkUtil.indexChunk(x, z);
                     var chunkImage = map.getChunks().get(index);
                     if (chunkImage != null) {
-                        var pixels = chunkImage.data;
+                        var pixels = getPixels(chunkImage);
                         var width = chunkImage.width;
                         var height = chunkImage.height;
 
@@ -113,6 +115,20 @@ public class ChunkInfoMapAsset extends CommonAsset {
                 return null;
             }
         });
+    }
+
+    public static int[] getPixels(MapImage image) {
+        if (image.bitsPerIndex == 0) {
+            return image.palette;
+        }
+        int pixelCount = image.width * image.height;
+        int[] pixels = new int[pixelCount];
+        BitFieldArr indices = new BitFieldArr(image.bitsPerIndex, pixelCount);
+        indices.set(image.packedIndices);
+        for (int i = 0; i < pixelCount; ++i) {
+            pixels[i] = image.palette[indices.get(i)];
+        }
+        return pixels;
     }
 
     // Copy of CommonAssetModule#sendAssets but adapted to only send 1 asset to a single player

@@ -1,7 +1,7 @@
 {
   "Group": "Buuz135",
   "Name": "SimpleClaims",
-  "Version": "1.0.32",
+  "Version": "1.0.34",
   "Description": "A chunk claiming and protection mod. Create parties, claim chunks, and protect your builds from other players.",
   "Authors": [
     {
@@ -9,7 +9,7 @@
     }
   ],
   "Website": "${website}",
-  "ServerVersion": "2026.02.17-255364b8e",
+  "ServerVersion": "2026.03.26-89796e57b",
   "Dependencies": {
     "Hytale:EntityModule": "*",
     "Hytale:InteractionModule": "*",
