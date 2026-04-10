@@ -3,12 +3,14 @@ package com.buuz135.simpleclaims.util;
 import com.buuz135.simpleclaims.claim.ClaimManager;
 import com.buuz135.simpleclaims.claim.party.PartyInfo;
 import com.buuz135.simpleclaims.claim.party.PartyOverrides;
-import com.hypixel.hytale.component.Holder;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import java.util.*;
@@ -81,13 +83,17 @@ public final class BenchChestCache {
                 if (!allowedCols[xi * size + zi]) continue;
 
                 for (int y = by - v; y <= by + v; y++) {
-                    var worldChunk = world.getChunk(ChunkUtil.indexChunkFromBlock(x, z));
-                    if (worldChunk == null) continue;
-                    var ref = worldChunk.getBlockComponentEntity(x, y, z);
+                    // Must use the live block entity ref — getBlockComponentHolder returns a copyEntity/clone
+                    // snapshot, whose ItemContainerBlock holds a cloned inventory. Crafting would mutate that
+                    // detached copy while real chests kept items (duplication exploit).
+                    WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(x, z));
+                    if (chunk == null) continue;
 
-                    if (ref == null) continue;
+                    Ref<ChunkStore> blockRef = chunk.getBlockComponentEntity(x, y, z);
+                    if (blockRef == null || !blockRef.isValid()) continue;
 
-                    var component = ref.getStore().getComponent(ref, ItemContainerBlock.getComponentType());
+                    Store<ChunkStore> store = blockRef.getStore();
+                    ItemContainerBlock component = store.getComponent(blockRef, ItemContainerBlock.getComponentType());
                     if (component == null) continue;
 
                     ItemContainer c = component.getItemContainer();
