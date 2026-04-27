@@ -86,7 +86,8 @@ public final class BenchChestCache {
                     // Must use the live block entity ref — getBlockComponentHolder returns a copyEntity/clone
                     // snapshot, whose ItemContainerBlock holds a cloned inventory. Crafting would mutate that
                     // detached copy while real chests kept items (duplication exploit).
-                    WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(x, z));
+                    // Avoid promoting chunks to TICKING from inside an ECS system tick.
+                    WorldChunk chunk = world.getChunkIfInMemory(ChunkUtil.indexChunkFromBlock(x, z));
                     if (chunk == null) continue;
 
                     Ref<ChunkStore> blockRef = chunk.getBlockComponentEntity(x, y, z);
