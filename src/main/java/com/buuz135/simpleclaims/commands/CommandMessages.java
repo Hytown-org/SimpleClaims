@@ -25,6 +25,9 @@ public class CommandMessages {
 
     public static final Message UNCLAIMED = Message.translation("commands.info.simpleclaims.unclaimed").color(Color.GREEN).bold(true);
     public static final Message CLAIMED = Message.translation("commands.info.simpleclaims.claimed").color(Color.GREEN).bold(true);
+    public static final Message PLAYTIME_CLAIMS_AWARDED = Message.translation("commands.info.simpleclaims.playtimeClaimsAwarded").color(Color.GREEN).bold(true);
+    public static final Message PLAYTIME_REWARD_RESET = Message.translation("commands.info.simpleclaims.playtimeRewardReset").color(Color.GREEN).bold(true);
+    public static final Message PLAYTIME_REWARD_RESET_NOTHING = Message.translation("commands.info.simpleclaims.playtimeRewardResetNothing").color(Color.YELLOW).bold(true);
 
     public static final Message NOW_USING_PARTY = Message.translation("commands.simpleclaims.nowUsingParty").color(Color.GREEN).bold(true);
 

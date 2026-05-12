@@ -70,6 +70,7 @@ dependencies {
     shadowBundle files('libs/codeclib-1.1.0.jar')
     shadowBundle 'org.slf4j:slf4j-simple:2.0.17'
     shadowBundle 'org.xerial:sqlite-jdbc:3.45.1.0'
+    compileOnly 'com.hytown:HytownNexus:1.2.16'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'at.helpch:placeholderapi-hytale:1.0.4'
     //runtimeOnly(files("./run/LuckPerms-Hytale-5.5.25-beta10.jar"))

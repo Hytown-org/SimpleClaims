@@ -7,6 +7,7 @@ import com.buuz135.simpleclaims.commands.subcommand.chunk.UnclaimChunkCommand;
 import com.buuz135.simpleclaims.commands.subcommand.chunk.op.OpChunkGuiCommand;
 import com.buuz135.simpleclaims.commands.subcommand.chunk.op.OpClaimChunkCommand;
 import com.buuz135.simpleclaims.commands.subcommand.chunk.op.OpUnclaimChunkCommand;
+import com.buuz135.simpleclaims.commands.subcommand.chunk.op.ResetPlaytimeRewardCommand;
 import com.buuz135.simpleclaims.gui.ChunkInfoGui;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -38,6 +39,7 @@ public class SimpleClaimProtectCommand extends AbstractAsyncCommand {
         this.addSubCommand(new OpClaimChunkCommand());
         this.addSubCommand(new OpUnclaimChunkCommand());
         this.addSubCommand(new OpChunkGuiCommand());
+        this.addSubCommand(new ResetPlaytimeRewardCommand());
     }
 
     @NonNullDecl

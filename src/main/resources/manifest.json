@@ -13,7 +13,8 @@
   "Dependencies": {
     "Hytale:EntityModule": "*",
     "Hytale:InteractionModule": "*",
-    "Hytale:Farming": "*"
+    "Hytale:Farming": "*",
+    "Hytown:Nexus": "*"
   },
   "OptionalDependencies": {
     "LuckPerms:LuckPerms": "*",
