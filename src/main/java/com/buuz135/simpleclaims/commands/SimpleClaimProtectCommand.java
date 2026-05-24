@@ -55,16 +55,16 @@ public class SimpleClaimProtectCommand extends AbstractAsyncCommand {
                     PlayerRef playerRef = ref.getStore().getComponent(ref, PlayerRef.getComponentType());
                     if (playerRef == null) return;
                     if (!ClaimManager.getInstance().canClaimInDimension(world)) {
-                        player.sendMessage(CommandMessages.CANT_CLAIM_IN_THIS_DIMENSION);
+                        playerRef.sendMessage(CommandMessages.CANT_CLAIM_IN_THIS_DIMENSION);
                         return;
                     }
                     var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                     if (party == null) {
                         party = ClaimManager.getInstance().createParty(player, playerRef, false);
-                        player.sendMessage(CommandMessages.PARTY_CREATED);
+                        playerRef.sendMessage(CommandMessages.PARTY_CREATED);
                     }
                     var position = store.getComponent(ref, TransformComponent.getComponentType());
-                    player.getPageManager().openCustomPage(ref, store, new ChunkInfoGui(playerRef, player.getWorld().getName(), ChunkUtil.chunkCoordinate(position.getPosition().getX()), ChunkUtil.chunkCoordinate(position.getPosition().getZ()), false));
+                    player.getPageManager().openCustomPage(ref, store, new ChunkInfoGui(playerRef, player.getWorld().getName(), ChunkUtil.chunkCoordinate(position.getPosition().x()), ChunkUtil.chunkCoordinate(position.getPosition().z()), false));
                 }, world);
             } else {
                 commandContext.sendMessage(MESSAGE_COMMANDS_ERRORS_PLAYER_NOT_IN_WORLD);

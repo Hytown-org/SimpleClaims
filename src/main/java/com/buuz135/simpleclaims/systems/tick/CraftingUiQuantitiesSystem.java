@@ -58,8 +58,8 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
         World world = player.getWorld();
         long now = System.currentTimeMillis();
 
-        var ch = playerRef.getPacketHandler().getChannel();
-        var map = WindowExtraResourcesState.getOrCreateMap(ch);
+        var connection = playerRef.getPacketHandler().getChannel();
+        var map = WindowExtraResourcesState.getOrCreateMap(connection);
 
         for (Window w : windows) {
             if (!(w instanceof SimpleCraftingWindow scw)) continue;

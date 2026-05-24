@@ -43,7 +43,7 @@ public class OpChunkGuiCommand extends AbstractAsyncCommand {
                     PlayerRef playerRef = ref.getStore().getComponent(ref, PlayerRef.getComponentType());
                     if (playerRef == null) return;
                     var position = store.getComponent(ref, TransformComponent.getComponentType());
-                    player.getPageManager().openCustomPage(ref, store, new ChunkInfoGui(playerRef, player.getWorld().getName(), ChunkUtil.chunkCoordinate(position.getPosition().getX()), ChunkUtil.chunkCoordinate(position.getPosition().getZ()), true));
+                    player.getPageManager().openCustomPage(ref, store, new ChunkInfoGui(playerRef, player.getWorld().getName(), ChunkUtil.chunkCoordinate(position.getPosition().x()), ChunkUtil.chunkCoordinate(position.getPosition().z()), true));
                 }, world);
             } else {
                 commandContext.sendMessage(MESSAGE_COMMANDS_ERRORS_PLAYER_NOT_IN_WORLD);

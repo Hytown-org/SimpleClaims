@@ -102,7 +102,7 @@ public class Main extends JavaPlugin {
         this.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class, (event) -> {
             var player = event.getHolder().getComponent(Player.getComponentType());
             var playerRef = event.getHolder().getComponent(PlayerRef.getComponentType());
-            ClaimManager.getInstance().setPlayerName(playerRef.getUuid(), player.getDisplayName(), System.currentTimeMillis());
+            ClaimManager.getInstance().setPlayerName(playerRef.getUuid(), playerRef.getUsername(), System.currentTimeMillis());
 
             var ch = playerRef.getPacketHandler().getChannel();
             WindowExtraResourcesState.getOrCreateMap(ch);
@@ -123,8 +123,7 @@ public class Main extends JavaPlugin {
             ClaimManager.getInstance().setPlayerName(event.getPlayerRef().getUuid(), event.getPlayerRef().getUsername(), System.currentTimeMillis());
 
             var ch = event.getPlayerRef().getPacketHandler().getChannel();
-            var m = ch.attr(WindowExtraResourcesState.EXTRA_BY_WINDOW_ID).get();
-            if (m != null) m.clear();
+            WindowExtraResourcesState.clear(ch);
         });
 
         this.getEventRegistry().registerAsyncGlobal(PlayerChatEvent.class, new PlayerChatListener());

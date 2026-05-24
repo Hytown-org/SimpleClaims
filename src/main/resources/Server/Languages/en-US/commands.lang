@@ -16,6 +16,9 @@ errors.simpleclaims.commandBlockedInClaim = This command is blocked inside this 
 simpleclaims.partyCreated = Party Created
 info.simpleclaims.unclaimed = Chunk unclaimed
 info.simpleclaims.claimed = Chunk claimed
+info.simpleclaims.playtimeClaimsAwarded = You earned {claims} playtime claim(s). Your party can now claim {max_claims} chunks. ({playtime_hours}h played)
+info.simpleclaims.playtimeRewardReset = Your playtime reward tracking has been reset
+info.simpleclaims.playtimeRewardResetNothing = You do not have a playtime reward tracking component to reset
 info.simpleclaims.entryDenied = You are not allowed to enter this claim!
 simpleclaims.nowUsingParty = Now using party: 
 

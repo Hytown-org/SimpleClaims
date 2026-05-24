@@ -10,7 +10,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
@@ -20,6 +19,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+import org.joml.Vector3d;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,12 +45,12 @@ public class EntryTickingSystem extends EntityTickingSystem<EntityStore> {
 
         var chunkInfo = ClaimManager.getInstance().getChunkRawCoords(
                 player.getWorld().getName(),
-                (int) Math.floor(playerRef.getTransform().getPosition().getX()),
-                (int) Math.floor(playerRef.getTransform().getPosition().getZ())
+                (int) Math.floor(playerRef.getTransform().getPosition().x()),
+                (int) Math.floor(playerRef.getTransform().getPosition().z())
         );
 
         if (chunkInfo != null) {
-            if (!ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), (int) playerRef.getTransform().getPosition().getX(), (int) playerRef.getTransform().getPosition().getZ(), PartyInfo::isAllowEntryEnabled, "")) {
+            if (!ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), (int) playerRef.getTransform().getPosition().x(), (int) playerRef.getTransform().getPosition().z(), PartyInfo::isAllowEntryEnabled, "")) {
                 if (playerLastSafePositions.containsKey(playerRef.getUuid())) {
                     var safePositions = playerLastSafePositions.get(playerRef.getUuid());
                     if (safePositions.size() > 2) {
@@ -60,7 +60,7 @@ public class EntryTickingSystem extends EntityTickingSystem<EntityStore> {
 
 
                             store.putComponent(ref, Teleport.getComponentType(), new Teleport(player.getWorld(),
-                                    new Vector3d(lastSafePos.getX(), lastSafePos.getY(), lastSafePos.getZ()),
+                                    new Vector3d(lastSafePos),
                                     lastSafePosition.getRotation()));
                             playerRef.sendMessage(TELEPORT_MESSAGE);
                         });
@@ -76,9 +76,9 @@ public class EntryTickingSystem extends EntityTickingSystem<EntityStore> {
         } else {
             var lastPos = safePositions.getLast().getPosition();
             var currentPos = currentTransform.getPosition();
-            double dx = lastPos.getX() - currentPos.getX();
-            double dy = lastPos.getY() - currentPos.getY();
-            double dz = lastPos.getZ() - currentPos.getZ();
+            double dx = lastPos.x() - currentPos.x();
+            double dy = lastPos.y() - currentPos.y();
+            double dz = lastPos.z() - currentPos.z();
             if (Math.sqrt(dx * dx + dy * dy + dz * dz) > 1.5) {
                 safePositions.add(currentTransform.clone());
                 if (safePositions.size() > 3) {

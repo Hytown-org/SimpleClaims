@@ -9,7 +9,6 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -22,6 +21,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+import org.joml.Vector3i;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;
@@ -74,7 +74,7 @@ public class ClaimUseBlockInteraction extends UseBlockInteraction {
             defaultInteract = PartyInfo::isPortalInteractEnabled;
             permission = PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL;
         }
-        if (ignored || (playerRef != null && ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), targetBlock.getX(), targetBlock.getZ(), defaultInteract, permission))) {
+        if (ignored || (playerRef != null && ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), targetBlock.x(), targetBlock.z(), defaultInteract, permission))) {
             super.interactWithBlock(world, commandBuffer, type, context, itemInHand, targetBlock, cooldownHandler);
         }
     }
@@ -115,7 +115,7 @@ public class ClaimUseBlockInteraction extends UseBlockInteraction {
             defaultInteract = PartyInfo::isPortalInteractEnabled;
             permission = PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL;
         }
-        if (ignored || (playerRef != null && ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), targetBlock.getX(), targetBlock.getZ(), defaultInteract, permission))) {
+        if (ignored || (playerRef != null && ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), targetBlock.x(), targetBlock.z(), defaultInteract, permission))) {
             super.simulateInteractWithBlock(type, context, itemInHand, world, targetBlock);
         }
     }

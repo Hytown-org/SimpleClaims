@@ -40,11 +40,11 @@ public class CreatePartyCommand extends AbstractAsyncCommand {
                     if (playerRef == null) return;
                     var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                     if (party != null) {
-                        commandContext.sendMessage(CommandMessages.IN_A_PARTY);
+                        playerRef.sendMessage(CommandMessages.IN_A_PARTY);
                         return;
                     }
                     party = ClaimManager.getInstance().createParty(player, playerRef, false);
-                    player.sendMessage(CommandMessages.PARTY_CREATED);
+                    playerRef.sendMessage(CommandMessages.PARTY_CREATED);
                     player.getPageManager().openCustomPage(ref, store, new PartyInfoEditGui(playerRef, party, false));
                 }, world);
             } else {

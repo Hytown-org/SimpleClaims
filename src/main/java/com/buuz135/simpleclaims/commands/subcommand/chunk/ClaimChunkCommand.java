@@ -39,33 +39,34 @@ public class ClaimChunkCommand extends AbstractAsyncCommand {
                 return CompletableFuture.runAsync(() -> {
                     PlayerRef playerRef = ref.getStore().getComponent(ref, PlayerRef.getComponentType());
                     if (playerRef == null) return;
+                    var position = playerRef.getTransform().getPosition();
                     if (!ClaimManager.getInstance().canClaimInDimension(world)) {
-                        player.sendMessage(CommandMessages.CANT_CLAIM_IN_THIS_DIMENSION);
+                        playerRef.sendMessage(CommandMessages.CANT_CLAIM_IN_THIS_DIMENSION);
                         return;
                     }
                     var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                     if (party == null) {
                         party = ClaimManager.getInstance().createParty(player, playerRef, false);
-                        player.sendMessage(CommandMessages.PARTY_CREATED);
+                        playerRef.sendMessage(CommandMessages.PARTY_CREATED);
                     }
                     if (!party.hasPermission(playerRef.getUuid(), PartyOverrides.PARTY_PROTECTION_CLAIM_UNCLAIM)) {
-                        player.sendMessage(CommandMessages.NO_PERMISSION);
+                        playerRef.sendMessage(CommandMessages.NO_PERMISSION);
                         return;
                     }
-                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().getX(), (int) playerRef.getTransform().getPosition().getZ());
+                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z());
                     if (chunk != null && ClaimManager.getInstance().getPartyById(chunk.getPartyOwner()) != null) {
-                        player.sendMessage(chunk.getPartyOwner().equals(party.getId()) ? CommandMessages.ALREADY_CLAIMED_BY_YOU : CommandMessages.ALREADY_CLAIMED_BY_ANOTHER_PLAYER);
+                        playerRef.sendMessage(chunk.getPartyOwner().equals(party.getId()) ? CommandMessages.ALREADY_CLAIMED_BY_YOU : CommandMessages.ALREADY_CLAIMED_BY_ANOTHER_PLAYER);
                         return;
                     }
                     
-                    int chunkX = ChunkUtil.chunkCoordinate((int) playerRef.getTransform().getPosition().getX());
-                    int chunkZ = ChunkUtil.chunkCoordinate((int) playerRef.getTransform().getPosition().getZ());
+                    int chunkX = ChunkUtil.chunkCoordinate((int) position.x());
+                    int chunkZ = ChunkUtil.chunkCoordinate((int) position.z());
 
                     
                     // Check if chunk is reserved by another party (only if perimeter reservation is enabled)
                     if (Main.CONFIG.get().isEnablePerimeterReservation() &&
                         ClaimManager.getInstance().isReservedByOtherParty(player.getWorld().getName(), chunkX, chunkZ, party.getId())) {
-                        player.sendMessage(CommandMessages.CHUNK_RESERVED_BY_OTHER_PARTY);
+                        playerRef.sendMessage(CommandMessages.CHUNK_RESERVED_BY_OTHER_PARTY);
                         return;
                     }
                     
@@ -73,7 +74,7 @@ public class ClaimChunkCommand extends AbstractAsyncCommand {
                     // Skip this check if the chunk itself is reserved by our party (we can claim our own reserved chunks)
                     if (Main.CONFIG.get().isEnablePerimeterReservation() &&
                         ClaimManager.getInstance().wouldPerimeterOverlapOtherReserved(player.getWorld().getName(), chunkX, chunkZ, party.getId())) {
-                        player.sendMessage(CommandMessages.CHUNK_RESERVED_BY_OTHER_PARTY);
+                        playerRef.sendMessage(CommandMessages.CHUNK_RESERVED_BY_OTHER_PARTY);
                         return;
                     }
                     
@@ -82,18 +83,18 @@ public class ClaimChunkCommand extends AbstractAsyncCommand {
                         ClaimManager.getInstance().getAmountOfClaims(party) > 0) {
                         boolean isAdjacent = ClaimManager.getInstance().isAdjacentToPartyClaims(player.getWorld().getName(), chunkX, chunkZ, party.getId());
                         if (!isAdjacent) {
-                            player.sendMessage(CommandMessages.CHUNK_NOT_ADJACENT);
+                            playerRef.sendMessage(CommandMessages.CHUNK_NOT_ADJACENT);
                             return;
                         }
                     }
                     
                     if (!ClaimManager.getInstance().hasEnoughClaimsLeft(party)) {
-                        player.sendMessage(CommandMessages.NOT_ENOUGH_CHUNKS);
+                        playerRef.sendMessage(CommandMessages.NOT_ENOUGH_CHUNKS);
                         return;
                     }
-                    var chunkInfo = ClaimManager.getInstance().claimChunkByRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().getX(), (int) playerRef.getTransform().getPosition().getZ(), party, player, playerRef);
+                    var chunkInfo = ClaimManager.getInstance().claimChunkByRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z(), party, player, playerRef);
                     ClaimManager.getInstance().queueMapUpdate(player.getWorld(), chunkInfo.getChunkX(), chunkInfo.getChunkZ());
-                    player.sendMessage(CommandMessages.CLAIMED);
+                    playerRef.sendMessage(CommandMessages.CLAIMED);
                 }, world);
             } else {
                 commandContext.sendMessage(MESSAGE_COMMANDS_ERRORS_PLAYER_NOT_IN_WORLD);

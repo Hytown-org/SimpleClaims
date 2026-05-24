@@ -7,6 +7,14 @@ plugins {
 
 version = project.version;
 
+def patchline = (findProperty('patchline') ?: 'release').toString()
+if (!(patchline in ['release', 'pre-release'])) {
+    throw new GradleException("Invalid patchline '${patchline}'. Use 'release' or 'pre-release'.")
+}
+
+def hytaleMavenUrl = "https://maven.hytale.com/${patchline}"
+def hytaleServerVersion = (findProperty('server_version') ?: '+').toString()
+
 configurations {
     shadowBundle
     implementation.extendsFrom(shadowBundle)
@@ -25,8 +33,8 @@ javadoc {
 repositories {
     mavenCentral()
     maven {
-        name = "hytale-release"
-        url = uri("https://maven.hytale.com/release")
+        name = "hytale-${patchline}"
+        url = uri(hytaleMavenUrl)
     }
     maven {
         name = "Jitpack"
@@ -43,8 +51,10 @@ def os = org.gradle.internal.os.OperatingSystem.current()
 def userHome = System.getProperty("user.home")
 
 def hytaleHome
-def hytaleServerJar
-if (os.isWindows()) {
+def configuredHytaleHome = findProperty('hytale.home_path')
+if (configuredHytaleHome) {
+    hytaleHome = configuredHytaleHome.toString()
+} else if (os.isWindows()) {
     hytaleHome = "$userHome/AppData/Roaming/Hytale"
 } else if (os.isMacOsX()) {
     hytaleHome = "$userHome/Library/Application Support/Hytale"
@@ -57,15 +67,10 @@ if (os.isWindows()) {
     throw new GradleException("Unsupported OS for Hytale")
 }
 
-hytaleServerJar = "$hytaleHome/install/$patchline/package/game/$game_build/Server/HytaleServer.jar"
-
-
-
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation files(hytaleServerJar)
-    //implementation(files(System.getProperty("user.home") + "/AppData/Roaming/Hytale/install/release/package/game/$game_build/Server/HytaleServer.jar"))
+    compileOnly "com.hypixel.hytale:Server:${hytaleServerVersion}"
     //implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
     shadowBundle files('libs/codeclib-1.1.0.jar')
     shadowBundle 'org.slf4j:slf4j-simple:2.0.17'
@@ -80,6 +85,25 @@ test {
     useJUnitPlatform()
 }
 
+def resolveHytaleServerVersion = {
+    def forced = findProperty('serverVersion')
+    if (forced) return forced.toString()
+    try {
+        def cfg = configurations.detachedConfiguration(
+                dependencies.create("com.hypixel.hytale:Server:${hytaleServerVersion}") {
+                    transitive = false
+                }
+        )
+        return cfg.resolvedConfiguration.firstLevelModuleDependencies
+                .find { it.moduleGroup == 'com.hypixel.hytale' && it.moduleName == 'Server' }
+                ?.moduleVersion ?: '*'
+    } catch (Exception ignored) {
+        return '*'
+    }
+}
+
+def resolvedServerVersion = resolveHytaleServerVersion()
+
 processResources {
     var expandProps = [
         'name'          : project.name,
@@ -87,7 +111,7 @@ processResources {
         'group'         : project.group,
         'description'   : mod_description,
         'website'       : website,
-        'server_version': server_version,
+        'server_version': resolvedServerVersion,
         'entry_point'   : entry_point
     ]
 

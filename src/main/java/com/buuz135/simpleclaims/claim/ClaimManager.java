@@ -69,7 +69,7 @@ public class ClaimManager {
         this.adminOverrides = new HashSet<>();
         this.databaseManager = new DatabaseManager(logger);
         this.mapUpdateQueue = new HashMap<>();
-        this.executorService = Executors.newFixedThreadPool(4);
+        this.executorService = Executors.newSingleThreadExecutor();
 
         FileUtils.ensureMainDirectory();
 
@@ -190,10 +190,11 @@ public class ClaimManager {
     }
 
     public PartyInfo createParty(Player owner, PlayerRef playerRef, boolean isAdmin) {
-        var party = new PartyInfo(UUID.randomUUID(), playerRef.getUuid(), owner.getDisplayName() + "'s Party", owner.getDisplayName() + "'s Party Description", new UUID[0], Color.getHSBColor(new Random().nextFloat(), 1, 1).getRGB());
+        var username = playerRef.getUsername();
+        var party = new PartyInfo(UUID.randomUUID(), playerRef.getUuid(), username + "'s Party", username + "'s Party Description", new UUID[0], Color.getHSBColor(new Random().nextFloat(), 1, 1).getRGB());
         party.addMember(playerRef.getUuid());
-        party.setCreatedTracked(new ModifiedTracking(playerRef.getUuid(), owner.getDisplayName(), LocalDateTime.now().toString()));
-        party.setModifiedTracked(new ModifiedTracking(playerRef.getUuid(), owner.getDisplayName(), LocalDateTime.now().toString()));
+        party.setCreatedTracked(new ModifiedTracking(playerRef.getUuid(), username, LocalDateTime.now().toString()));
+        party.setModifiedTracked(new ModifiedTracking(playerRef.getUuid(), username, LocalDateTime.now().toString()));
         this.parties.put(party.getId().toString(), party);
         if (!isAdmin) this.playerToParty.put(playerRef.getUuid(), party.getId());
         this.saveParty(party);
@@ -223,7 +224,7 @@ public class ClaimManager {
         var chunkInfo = new ChunkInfo(partyInfo.getId(), chunkX, chunkZ);
         var chunkDimension = this.chunks.computeIfAbsent(dimension, k -> new HashMap<>());
         chunkDimension.put(ChunkInfo.formatCoordinates(chunkX, chunkZ), chunkInfo);
-        chunkInfo.setCreatedTracked(new ModifiedTracking(playerRef.getUuid(), owner.getDisplayName(), LocalDateTime.now().toString()));
+        chunkInfo.setCreatedTracked(new ModifiedTracking(playerRef.getUuid(), playerRef.getUsername(), LocalDateTime.now().toString()));
         partyClaimCounts.merge(partyInfo.getId(), 1, Integer::sum);
         
         // Remove this chunk from reserved chunks if it was reserved by this party

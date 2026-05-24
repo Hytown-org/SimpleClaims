@@ -6,12 +6,12 @@ import com.buuz135.simpleclaims.claim.ClaimManager;
 import com.buuz135.simpleclaims.claim.party.PartyInfo;
 import com.buuz135.simpleclaims.claim.party.PartyOverrides;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.Map;
 import java.util.Objects;
@@ -87,8 +87,8 @@ public class SimpleClaimsExpansion extends PlaceholderExpansion {
             return PlaceholderAPI.booleanValue(CLAIMS.isAllowedToInteract(
                     player.getUuid(),
                     world.getName(),
-                    Double.valueOf(position.getX()).intValue(),
-                    Double.valueOf(position.getZ()).intValue(),
+                    Double.valueOf(position.x()).intValue(),
+                    Double.valueOf(position.z()).intValue(),
                     interaction.interactMethod(),
                     interaction.permission()));
         }

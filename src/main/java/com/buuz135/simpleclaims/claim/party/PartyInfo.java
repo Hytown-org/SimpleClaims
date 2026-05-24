@@ -189,6 +189,14 @@ public class PartyInfo {
         return 0;
     }
 
+    public int getPlaytimeBonusChunks() {
+        var bonusOverride = this.getOverride(PartyOverrides.PLAYTIME_CLAIM_CHUNKS);
+        if (bonusOverride != null) {
+            return (Integer) bonusOverride.getValue().getTypedValue();
+        }
+        return 0;
+    }
+
     public int getMaxBonusLimit() {
         if (!Main.CONFIG.get().isScaleClaimLimitByMembers()) {
             // Legacy mode: config max only
@@ -209,7 +217,7 @@ public class PartyInfo {
     }
 
     public int getMaxClaimAmount(){
-        return getBaseClaimAmount() + getBonusChunks();
+        return getBaseClaimAmount() + getBonusChunks() + getPlaytimeBonusChunks();
     }
 
     public boolean isBlockPlaceEnabled(){
@@ -323,6 +331,11 @@ public class PartyInfo {
         }
         // Remove BONUS_CLAIM_CHUNKS if it's 0
         if (override.getType().equals(PartyOverrides.BONUS_CLAIM_CHUNKS)
+                && (int) override.getValue().tryGetTypedValue().orElse(0) == 0) {
+            overrideMap.remove(override.getType());
+            return;
+        }
+        if (override.getType().equals(PartyOverrides.PLAYTIME_CLAIM_CHUNKS)
                 && (int) override.getValue().tryGetTypedValue().orElse(0) == 0) {
             overrideMap.remove(override.getType());
             return;

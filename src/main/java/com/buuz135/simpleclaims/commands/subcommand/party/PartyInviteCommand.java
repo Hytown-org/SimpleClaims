@@ -47,34 +47,34 @@ public class PartyInviteCommand extends AbstractAsyncCommand {
                     if (playerRef != null) {
                         var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                         if (party == null) {
-                            player.sendMessage(CommandMessages.NOT_IN_A_PARTY);
+                            playerRef.sendMessage(CommandMessages.NOT_IN_A_PARTY);
                             return;
                         }
                         if (!party.hasPermission(playerRef.getUuid(), PartyOverrides.PARTY_PROTECTION_INVITE_PLAYERS)) {
-                            player.sendMessage(CommandMessages.NO_PERMISSION);
+                            playerRef.sendMessage(CommandMessages.NO_PERMISSION);
                             return;
                         }
                         PlayerRef invitedPlayer = commandContext.get(this.name);
                         if (invitedPlayer == null) {
-                            player.sendMessage(CommandMessages.PLAYER_NOT_FOUND);
+                            playerRef.sendMessage(CommandMessages.PLAYER_NOT_FOUND);
                             return;
                         }
                         Player invitedPlayerPlayer = store.getComponent(invitedPlayer.getReference(), Player.getComponentType());
                         if (invitedPlayerPlayer == null) {
-                            player.sendMessage(CommandMessages.PLAYER_NOT_FOUND);
+                            playerRef.sendMessage(CommandMessages.PLAYER_NOT_FOUND);
                             return;
                         }
                         if (party.isOwnerOrMember(invitedPlayer.getUuid())) {
-                            player.sendMessage(CommandMessages.PARTY_INVITE_SELF);
+                            playerRef.sendMessage(CommandMessages.PARTY_INVITE_SELF);
                             return;
                         }
                         if (Main.CONFIG.get().getMaxPartyMembers() != -1 && (party.getMembers().length + ClaimManager.getInstance().getPartyInvites().values().stream().filter(partyInvite -> partyInvite.party().equals(party.getId())).count()) >= Main.CONFIG.get().getMaxPartyMembers()) {
-                            player.sendMessage(CommandMessages.PARTY_MEMBER_LIMIT_REACHED);
+                            playerRef.sendMessage(CommandMessages.PARTY_MEMBER_LIMIT_REACHED);
                             return;
                         }
                         ClaimManager.getInstance().invitePlayerToParty(invitedPlayer, party, playerRef);
-                        player.sendMessage(CommandMessages.PARTY_INVITE_SENT.param("username", invitedPlayerPlayer.getDisplayName()));
-                        invitedPlayer.sendMessage(CommandMessages.PARTY_INVITE_RECEIVED.param("party_name", party.getName()).param("username", player.getDisplayName()));
+                        playerRef.sendMessage(CommandMessages.PARTY_INVITE_SENT.param("username", invitedPlayer.getUsername()));
+                        invitedPlayer.sendMessage(CommandMessages.PARTY_INVITE_RECEIVED.param("party_name", party.getName()).param("username", playerRef.getUsername()));
                     }
                 }, world);
             } else {

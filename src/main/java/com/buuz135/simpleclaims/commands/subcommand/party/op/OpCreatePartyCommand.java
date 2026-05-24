@@ -53,7 +53,7 @@ public class OpCreatePartyCommand extends AbstractAsyncCommand {
                         party.setName(commandName);
                         party.setOwner(UUID.randomUUID());
                         party.setMembers(new UUID[]{});
-                        player.sendMessage(CommandMessages.PARTY_CREATED);
+                        playerRef.sendMessage(CommandMessages.PARTY_CREATED);
                         player.getPageManager().openCustomPage(ref, store, new PartyInfoEditGui(playerRef, party, true));
                     }
                 }, world);

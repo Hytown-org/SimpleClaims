@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
@@ -41,7 +42,7 @@ public class PartyAcceptCommand extends AbstractAsyncCommand {
                     if (playerRef != null) {
                         var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                         if (party != null) {
-                            player.sendMessage(CommandMessages.IN_A_PARTY);
+                            playerRef.sendMessage(CommandMessages.IN_A_PARTY);
                             return;
                         }
 
@@ -50,17 +51,18 @@ public class PartyAcceptCommand extends AbstractAsyncCommand {
                             if (invite != null) {
                                 var partyInvite = ClaimManager.getInstance().getPartyById(invite.party());
                                 if (partyInvite != null) {
-                                    player.sendMessage(CommandMessages.PARTY_INVITE_JOIN.param("party_name", partyInvite.getName()).param("username", player.getDisplayName()));
-                                    var playerSender = player.getWorld().getEntity(invite.sender());
-                                    if (playerSender instanceof Player playerSenderPlayer) {
-                                        playerSenderPlayer.sendMessage(CommandMessages.PARTY_INVITE_JOIN.param("party_name", partyInvite.getName()).param("username", player.getDisplayName()));
+                                    var joinedMessage = CommandMessages.PARTY_INVITE_JOIN.param("party_name", partyInvite.getName()).param("username", playerRef.getUsername());
+                                    playerRef.sendMessage(joinedMessage);
+                                    var inviterRef = Universe.get().getPlayer(invite.sender());
+                                    if (inviterRef != null && inviterRef.isValid()) {
+                                        inviterRef.sendMessage(joinedMessage);
                                     }
                                 }
                             } else {
-                                player.sendMessage(CommandMessages.PARTY_MEMBER_LIMIT_REACHED);
+                                playerRef.sendMessage(CommandMessages.PARTY_MEMBER_LIMIT_REACHED);
                             }
                         } else {
-                            player.sendMessage(CommandMessages.NO_PENDING_INVITES);
+                            playerRef.sendMessage(CommandMessages.NO_PENDING_INVITES);
                         }
                     }
                 }, world);

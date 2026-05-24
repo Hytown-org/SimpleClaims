@@ -45,18 +45,18 @@ public class OpModifyChunkAmountCommand extends AbstractAsyncCommand {
                     if (playerRef != null) {
                         var selectedPartyID = ClaimManager.getInstance().getAdminUsageParty().get(playerRef.getUuid());
                         if (selectedPartyID == null) {
-                            player.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
+                            playerRef.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
                             return;
                         }
                         var party = ClaimManager.getInstance().getPartyById(selectedPartyID);
                         if (party == null) {
-                            player.sendMessage(CommandMessages.PARTY_NOT_FOUND);
+                            playerRef.sendMessage(CommandMessages.PARTY_NOT_FOUND);
                             return;
                         }
                         var selectedAmount = amount.get(commandContext);
                         party.setOverride(new PartyOverride(PartyOverrides.CLAIM_CHUNK_BASE, new PartyOverride.PartyOverrideValue("integer", selectedAmount)));
                         ClaimManager.getInstance().saveParty(party);
-                        player.sendMessage(CommandMessages.MODIFIED_MAX_CHUNK_AMOUNT.param("party_name", party.getName()).param("amount", party.getMaxClaimAmount()));
+                        playerRef.sendMessage(CommandMessages.MODIFIED_MAX_CHUNK_AMOUNT.param("party_name", party.getName()).param("amount", party.getMaxClaimAmount()));
                     }
                 }, world);
             } else {

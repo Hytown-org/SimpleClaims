@@ -66,7 +66,7 @@ public class ChunkInfoGui extends InteractiveCustomUIPage<ChunkInfoGui.ChunkInfo
                 if (isOp) {
                     var selectedPartyID = ClaimManager.getInstance().getAdminUsageParty().get(playerRef.getUuid());
                     if (selectedPartyID == null) {
-                        playerInstance.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
+                        playerRef.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
                         this.sendUpdate();
                         return;
                     }
@@ -84,7 +84,7 @@ public class ChunkInfoGui extends InteractiveCustomUIPage<ChunkInfoGui.ChunkInfo
                         // Check if chunk is reserved by another party (only if perimeter reservation is enabled)
                         if (Main.CONFIG.get().isEnablePerimeterReservation() &&
                             ClaimManager.getInstance().isReservedByOtherParty(dimension, x, z, playerParty.getId())) {
-                            playerInstance.sendMessage(CommandMessages.CHUNK_RESERVED_BY_OTHER_PARTY);
+                            playerRef.sendMessage(CommandMessages.CHUNK_RESERVED_BY_OTHER_PARTY);
                             this.sendUpdate();
                             return;
                         }
@@ -93,7 +93,7 @@ public class ChunkInfoGui extends InteractiveCustomUIPage<ChunkInfoGui.ChunkInfo
                         // Skip this check if the chunk itself is reserved by the player's party (we can claim our own reserved chunks)
                         if (Main.CONFIG.get().isEnablePerimeterReservation() &&
                             ClaimManager.getInstance().wouldPerimeterOverlapOtherReserved(dimension, x, z, playerParty.getId())) {
-                            playerInstance.sendMessage(CommandMessages.CHUNK_RESERVED_BY_OTHER_PARTY);
+                            playerRef.sendMessage(CommandMessages.CHUNK_RESERVED_BY_OTHER_PARTY);
                             this.sendUpdate();
                             return;
                         }
@@ -103,7 +103,7 @@ public class ChunkInfoGui extends InteractiveCustomUIPage<ChunkInfoGui.ChunkInfo
                             ClaimManager.getInstance().getAmountOfClaims(playerParty) > 0) {
                             boolean isAdjacent = ClaimManager.getInstance().isAdjacentToPartyClaims(dimension, x, z, playerParty.getId());
                             if (!isAdjacent) {
-                                playerInstance.sendMessage(CommandMessages.CHUNK_NOT_ADJACENT);
+                                playerRef.sendMessage(CommandMessages.CHUNK_NOT_ADJACENT);
                                 this.sendUpdate();
                                 return;
                             }
@@ -121,7 +121,7 @@ public class ChunkInfoGui extends InteractiveCustomUIPage<ChunkInfoGui.ChunkInfo
                     var chunk = ClaimManager.getInstance().getChunk(dimension, x, z);
                     var selectedPartyID = ClaimManager.getInstance().getAdminUsageParty().get(playerRef.getUuid());
                     if (selectedPartyID == null) {
-                        playerInstance.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
+                        playerRef.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
                         this.sendUpdate();
                         return;
                     }

@@ -9,7 +9,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.dependency.Dependency;
 import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.component.query.Query;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.protocol.Transform;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -23,6 +22,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.blackboard.view.event.entity.EntityEventType;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -41,8 +41,8 @@ public class CustomDamageEventSystem extends DamageEventSystem {
             if (attackerRef.isValid()) {
                 Player attackerPlayerComponent = (Player) commandBuffer.getComponent(attackerRef, Player.getComponentType());
                 if (attackerPlayerComponent != null) { //The source is a player
-                    // && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), (int) transform.getX(), (int) transform.getZ(), PartyInfo::isPVPEnabled)) {
-                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) transform.getX(), (int) transform.getZ());
+                    // && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), (int) transform.x(), (int) transform.z(), PartyInfo::isPVPEnabled)) {
+                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) transform.x(), (int) transform.z());
                     if (chunk != null) {
                         var partyInfo = ClaimManager.getInstance().getPartyById(chunk.getPartyOwner());
                         if (partyInfo != null && !partyInfo.isPVPEnabled() && "Hytown Official".equals(partyInfo.getName())) {
@@ -73,14 +73,14 @@ public class CustomDamageEventSystem extends DamageEventSystem {
     private void killKnockback(Damage damage, Ref<EntityStore> ref, Store<EntityStore> store) {
         KnockbackComponent metaKb = damage.getMetaObject(Damage.KNOCKBACK_COMPONENT);
         if (metaKb != null) {
-            metaKb.setVelocity(Vector3d.ZERO);
+            metaKb.setVelocity(new Vector3d());
             metaKb.setDuration(0);
         }
         damage.removeMetaObject(Damage.KNOCKBACK_COMPONENT);
 
         KnockbackComponent entityKb = store.getComponent(ref, KnockbackComponent.getComponentType());
         if (entityKb != null) {
-            entityKb.setVelocity(Vector3d.ZERO);
+            entityKb.setVelocity(new Vector3d());
             entityKb.setDuration(0);
         }
     }

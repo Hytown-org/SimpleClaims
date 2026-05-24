@@ -294,7 +294,7 @@ public class DatabaseManager {
                 deleteMembers.setString(1, party.getId().toString());
                 deleteMembers.executeUpdate();
             }
-            try (PreparedStatement insertMember = connection.prepareStatement("INSERT INTO party_members (party_id, member_uuid) VALUES (?, ?)")) {
+            try (PreparedStatement insertMember = connection.prepareStatement("INSERT OR IGNORE INTO party_members (party_id, member_uuid) VALUES (?, ?)")) {
                 for (UUID member : party.getMembers()) {
                     insertMember.setString(1, party.getId().toString());
                     insertMember.setString(2, member.toString());

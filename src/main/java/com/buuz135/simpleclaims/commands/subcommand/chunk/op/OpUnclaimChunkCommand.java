@@ -37,14 +37,15 @@ public class OpUnclaimChunkCommand extends AbstractAsyncCommand {
                 return CompletableFuture.runAsync(() -> {
                     PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
                     if (playerRef != null) {
-                        var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().getX(), (int) playerRef.getTransform().getPosition().getZ());
+                        var position = playerRef.getTransform().getPosition();
+                        var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z());
                         if (chunk == null) {
-                            player.sendMessage(CommandMessages.NOT_CLAIMED);
+                            playerRef.sendMessage(CommandMessages.NOT_CLAIMED);
                             return;
                         }
-                        ClaimManager.getInstance().unclaimRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().getX(), (int) playerRef.getTransform().getPosition().getZ());
+                        ClaimManager.getInstance().unclaimRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z());
                         ClaimManager.getInstance().queueMapUpdate(player.getWorld(), chunk.getChunkX(), chunk.getChunkZ());
-                        player.sendMessage(CommandMessages.UNCLAIMED);
+                        playerRef.sendMessage(CommandMessages.UNCLAIMED);
                     }
                 }, world);
             } else {

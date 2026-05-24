@@ -42,7 +42,7 @@ public class PartyLeaveCommand extends AbstractAsyncCommand {
                     if (playerRef != null) {
                         var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                         if (party == null) {
-                            player.sendMessage(CommandMessages.NOT_IN_A_PARTY);
+                            playerRef.sendMessage(CommandMessages.NOT_IN_A_PARTY);
                             return;
                         }
                         ClaimManager.getInstance().leaveParty(playerRef, party);

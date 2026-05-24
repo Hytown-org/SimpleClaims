@@ -9,6 +9,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.EmptyItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
@@ -88,7 +89,7 @@ public class QueuedCraftClaimFilterSystem extends EntityTickingSystem<EntityStor
         World world = player.getWorld();
 
         var chests = BenchChestCache.getAllowedChests(world, playerRef, bx, by, bz);
-        ItemContainer inv = player.getInventory().getCombinedBackpackStorageHotbar();
+        ItemContainer inv = InventoryComponent.getCombined(store, ref, InventoryComponent.BACKPACK_STORAGE_HOTBAR);
         ItemContainer allowedInput = buildAllowedInput(inv, chests);
 
         for (Object job : queue) {

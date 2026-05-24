@@ -39,29 +39,30 @@ public class OpClaimChunkCommand extends AbstractAsyncCommand {
                 return CompletableFuture.runAsync(() -> {
                     PlayerRef playerRef = ref.getStore().getComponent(ref, PlayerRef.getComponentType());
                     if (playerRef == null) return;
+                    var position = playerRef.getTransform().getPosition();
                     var selectedPartyID = ClaimManager.getInstance().getAdminUsageParty().get(playerRef.getUuid());
                     if (selectedPartyID == null) {
-                        player.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
+                        playerRef.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
                         return;
                     }
                     var party = ClaimManager.getInstance().getPartyById(selectedPartyID);
                     if (party == null) {
-                        player.sendMessage(CommandMessages.PARTY_NOT_FOUND);
+                        playerRef.sendMessage(CommandMessages.PARTY_NOT_FOUND);
                         return;
                     }
-                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().getX(), (int) playerRef.getTransform().getPosition().getZ());
+                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z());
                     if (chunk != null) {
-                        player.sendMessage(chunk.getPartyOwner().equals(party.getId()) ? CommandMessages.ALREADY_CLAIMED_BY_YOU : CommandMessages.ALREADY_CLAIMED_BY_ANOTHER_PLAYER);
+                        playerRef.sendMessage(chunk.getPartyOwner().equals(party.getId()) ? CommandMessages.ALREADY_CLAIMED_BY_YOU : CommandMessages.ALREADY_CLAIMED_BY_ANOTHER_PLAYER);
                         return;
                     }
 
                     if (!ClaimManager.getInstance().hasEnoughClaimsLeft(party)) {
-                        player.sendMessage(CommandMessages.NOT_ENOUGH_CHUNKS);
+                        playerRef.sendMessage(CommandMessages.NOT_ENOUGH_CHUNKS);
                         return;
                     }
-                    var chunkInfo = ClaimManager.getInstance().claimChunkByRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().getX(), (int) playerRef.getTransform().getPosition().getZ(), party, player, playerRef);
+                    var chunkInfo = ClaimManager.getInstance().claimChunkByRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z(), party, player, playerRef);
                     ClaimManager.getInstance().queueMapUpdate(player.getWorld(), chunkInfo.getChunkX(), chunkInfo.getChunkZ());
-                    player.sendMessage(CommandMessages.CLAIMED);
+                    playerRef.sendMessage(CommandMessages.CLAIMED);
                 }, world);
             } else {
                 commandContext.sendMessage(MESSAGE_COMMANDS_ERRORS_PLAYER_NOT_IN_WORLD);
