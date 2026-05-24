@@ -1,6 +1,7 @@
 # 1.0.38
 
 * Ported to version 0.5.0
+* pt-BR translation - odv1983
 
 # 1.0.37
 
