@@ -106,8 +106,8 @@ public final class CommandBlacklistPacketAdapters {
             if (ClaimManager.getInstance().getAdminClaimOverrides().contains(playerRef.getUuid())) return false;
 
             var position = playerRef.getTransform().getPosition();
-            int blockX = (int) Math.floor(position.getX());
-            int blockZ = (int) Math.floor(position.getZ());
+            int blockX = (int) Math.floor(position.x());
+            int blockZ = (int) Math.floor(position.z());
             String dimension = player.getWorld().getName();
 
             var chunk = ClaimManager.getInstance().getChunkRawCoords(dimension, blockX, blockZ);

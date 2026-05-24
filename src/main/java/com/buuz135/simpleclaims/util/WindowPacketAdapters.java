@@ -2,12 +2,12 @@ package com.buuz135.simpleclaims.util;
 
 import com.hypixel.hytale.protocol.ExtraResources;
 import com.hypixel.hytale.protocol.Packet;
+import com.hypixel.hytale.protocol.io.ChannelConnection;
 import com.hypixel.hytale.protocol.packets.window.CloseWindow;
 import com.hypixel.hytale.protocol.packets.window.OpenWindow;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.io.adapter.PacketFilter;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import io.netty.channel.Channel;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -25,23 +25,23 @@ public final class WindowPacketAdapters {
         if (installed != null) return;
 
         installed = PacketAdapters.registerOutbound((PlayerRef playerRef, Packet serverPacket) -> {
-            Channel ch = playerRef.getPacketHandler().getChannel();
+            ChannelConnection connection = playerRef.getPacketHandler().getChannel();
 
             if (serverPacket instanceof OpenWindow ow) {
-                ExtraResources primed = ch.attr(WindowExtraResourcesState.NEXT_OPEN_EXTRA).getAndSet(null);
+                ExtraResources primed = WindowExtraResourcesState.takeNextOpenExtra(connection);
                 if (primed != null) {
                     ow.extraResources = primed;
 
-                    var map = WindowExtraResourcesState.getOrCreateMap(ch);
+                    var map = WindowExtraResourcesState.getOrCreateMap(connection);
                     map.put(ow.id, primed);
 
-                    WindowExtraResourcesState.getOrCreateBenchSet(ch).add(ow.id);
+                    WindowExtraResourcesState.getOrCreateBenchSet(connection).add(ow.id);
                 }
                 return false;
             }
 
             if (serverPacket != null && serverPacket.getClass().getName().equals("com.hypixel.hytale.protocol.packets.window.UpdateWindow")) {
-                Map<Integer, ExtraResources> map = ch.attr(WindowExtraResourcesState.EXTRA_BY_WINDOW_ID).get();
+                Map<Integer, ExtraResources> map = WindowExtraResourcesState.getMap(connection);
                 if (map == null || map.isEmpty()) return false;
 
                 try {
@@ -49,7 +49,7 @@ public final class WindowPacketAdapters {
                     int id = (int) getUpdateIdField(cls).get(serverPacket);
                     if (id == 0) return false;
 
-                    var benchIds = ch.attr(WindowExtraResourcesState.BENCH_WINDOW_IDS).get();
+                    var benchIds = WindowExtraResourcesState.getBenchSet(connection);
                     if (benchIds == null || !benchIds.contains(id)) return false;
 
                     ExtraResources forced = map.get(id);
@@ -61,10 +61,10 @@ public final class WindowPacketAdapters {
             }
 
             if (serverPacket instanceof CloseWindow cw) {
-                var map = ch.attr(WindowExtraResourcesState.EXTRA_BY_WINDOW_ID).get();
+                var map = WindowExtraResourcesState.getMap(connection);
                 if (map != null) map.remove(cw.id);
 
-                var benchIds = ch.attr(WindowExtraResourcesState.BENCH_WINDOW_IDS).get();
+                var benchIds = WindowExtraResourcesState.getBenchSet(connection);
                 if (benchIds != null) benchIds.remove(cw.id);
             }
 
