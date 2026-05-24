@@ -14,7 +14,7 @@ import com.hypixel.hytale.component.system.tick.DelayedEntitySystem;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.math.vector.Vector3d;
+import org.joml.Vector3d;
 import com.hypixel.hytale.protocol.Color;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -51,8 +51,8 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
         Player player = store.getComponent(ref, Player.getComponentType());
 
         Vector3d pos = playerRef.getTransform().getPosition();
-        int chunkX = ChunkUtil.chunkCoordinate((int) pos.getX());
-        int chunkZ = ChunkUtil.chunkCoordinate((int) pos.getZ());
+        int chunkX = ChunkUtil.chunkCoordinate((int) pos.x());
+        int chunkZ = ChunkUtil.chunkCoordinate((int) pos.z());
         String dimension = player.getWorld().getName();
         for (int x = chunkX - 1; x <= chunkX + 1; ++x) {
             for (int z = chunkZ - 1; z <= chunkZ + 1; ++z) {
@@ -73,10 +73,10 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
         int maxX = ChunkUtil.maxBlock(chunkX) + 1;
         int maxZ = ChunkUtil.maxBlock(chunkZ) + 1;
 
-        double distMinX = Math.abs(pos.getX() - minX);
-        double distMaxX = Math.abs(pos.getX() - maxX);
-        double distMinZ = Math.abs(pos.getZ() - minZ);
-        double distMaxZ = Math.abs(pos.getZ() - maxZ);
+        double distMinX = Math.abs(pos.x() - minX);
+        double distMaxX = Math.abs(pos.x() - maxX);
+        double distMinZ = Math.abs(pos.z() - minZ);
+        double distMaxZ = Math.abs(pos.z() - maxZ);
 
         double threshold = 5.0;
         return distMinX < threshold || distMaxX < threshold || distMinZ < threshold || distMaxZ < threshold;
@@ -89,16 +89,16 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
         int maxZ = ChunkUtil.maxBlock(chunkZ) + 1;
 
         double threshold = 5.0;
-        double playerY = playerPos.getY();
+        double playerY = playerPos.y();
         var particleName = "Buuz135_SimpleClaims_Spawn";
         SpatialResource<Ref<EntityStore>, EntityStore> playerSpatialResource = (SpatialResource) store.getResource(EntityModule.get().getPlayerSpatialResourceType());
         int colorInt = partyInfo.getColor();
         Color particleColor = new Color((byte) ((colorInt >> 16) & 0xFF), (byte) ((colorInt >> 8) & 0xFF), (byte) (colorInt & 0xFF));
-        if (Math.abs(playerPos.getX() - minX) < threshold) {
+        if (Math.abs(playerPos.x() - minX) < threshold) {
             ChunkInfo adjacent = ClaimManager.getInstance().getChunk(dimension, chunkX - 1, chunkZ);
             if (adjacent == null || !adjacent.getPartyOwner().equals(partyInfo.getId())) {
                 for (double z = minZ; z <= maxZ; z += 0.5) {
-                    if (Math.abs(playerPos.getZ() - z) < threshold && random.nextBoolean()) {
+                    if (Math.abs(playerPos.z() - z) < threshold && random.nextBoolean()) {
                         var pos = new Vector3d(minX, playerY, z + randomOffset());
                         List<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
                         playerSpatialResource.getSpatialStructure().collect(playerPos, (double) 75.0F, playerRefs);
@@ -109,11 +109,11 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
                 }
             }
         }
-        if (Math.abs(playerPos.getX() - maxX) < threshold) {
+        if (Math.abs(playerPos.x() - maxX) < threshold) {
             ChunkInfo adjacent = ClaimManager.getInstance().getChunk(dimension, chunkX + 1, chunkZ);
             if (adjacent == null || !adjacent.getPartyOwner().equals(partyInfo.getId())) {
                 for (double z = minZ; z <= maxZ; z += 0.5) {
-                    if (Math.abs(playerPos.getZ() - z) < threshold && random.nextBoolean()) {
+                    if (Math.abs(playerPos.z() - z) < threshold && random.nextBoolean()) {
                         var pos = new Vector3d(maxX, playerY, z + randomOffset());
                         List<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
                         playerSpatialResource.getSpatialStructure().collect(playerPos, (double) 75.0F, playerRefs);
@@ -124,11 +124,11 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
                 }
             }
         }
-        if (Math.abs(playerPos.getZ() - minZ) < threshold) {
+        if (Math.abs(playerPos.z() - minZ) < threshold) {
             ChunkInfo adjacent = ClaimManager.getInstance().getChunk(dimension, chunkX, chunkZ - 1);
             if (adjacent == null || !adjacent.getPartyOwner().equals(partyInfo.getId())) {
                 for (double x = minX; x <= maxX; x += 0.5) {
-                    if (Math.abs(playerPos.getX() - x) < threshold && random.nextBoolean()) {
+                    if (Math.abs(playerPos.x() - x) < threshold && random.nextBoolean()) {
                         var pos = new Vector3d(x + randomOffset(), playerY, minZ);
                         List<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
                         playerSpatialResource.getSpatialStructure().collect(playerPos, (double) 75.0F, playerRefs);
@@ -139,11 +139,11 @@ public class ChunkBordersTickingSystem extends DelayedEntitySystem<EntityStore> 
                 }
             }
         }
-        if (Math.abs(playerPos.getZ() - maxZ) < threshold) {
+        if (Math.abs(playerPos.z() - maxZ) < threshold) {
             ChunkInfo adjacent = ClaimManager.getInstance().getChunk(dimension, chunkX, chunkZ + 1);
             if (adjacent == null || !adjacent.getPartyOwner().equals(partyInfo.getId())) {
                 for (double x = minX; x <= maxX; x += 0.5) {
-                    if (Math.abs(playerPos.getX() - x) < threshold && random.nextBoolean()) {
+                    if (Math.abs(playerPos.x() - x) < threshold && random.nextBoolean()) {
                         var pos = new Vector3d(x + randomOffset(), playerY, maxZ);
                         List<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
                         playerSpatialResource.getSpatialStructure().collect(playerPos, (double) 75.0F, playerRefs);

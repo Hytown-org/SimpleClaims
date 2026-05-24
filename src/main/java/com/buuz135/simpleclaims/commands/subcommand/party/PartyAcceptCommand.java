@@ -31,17 +31,17 @@ public class PartyAcceptCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef != null) {
+                    Player player = ref.getStore().getComponent(ref, Player.getComponentType());
+                    if (player != null) {
                         var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                         if (party != null) {
-                            player.sendMessage(CommandMessages.IN_A_PARTY);
+                            playerRef.sendMessage(CommandMessages.IN_A_PARTY);
                             return;
                         }
 
@@ -50,17 +50,17 @@ public class PartyAcceptCommand extends AbstractAsyncCommand {
                             if (invite != null) {
                                 var partyInvite = ClaimManager.getInstance().getPartyById(invite.party());
                                 if (partyInvite != null) {
-                                    player.sendMessage(CommandMessages.PARTY_INVITE_JOIN.param("party_name", partyInvite.getName()).param("username", player.getDisplayName()));
+                                    playerRef.sendMessage(CommandMessages.PARTY_INVITE_JOIN.param("party_name", partyInvite.getName()).param("username", playerRef.getUsername()));
                                     var playerSender = player.getWorld().getEntity(invite.sender());
                                     if (playerSender instanceof Player playerSenderPlayer) {
-                                        playerSenderPlayer.sendMessage(CommandMessages.PARTY_INVITE_JOIN.param("party_name", partyInvite.getName()).param("username", player.getDisplayName()));
+                                        playerSenderPlayer.getPlayerRef().sendMessage(CommandMessages.PARTY_INVITE_JOIN.param("party_name", partyInvite.getName()).param("username", playerRef.getUsername()));
                                     }
                                 }
                             } else {
-                                player.sendMessage(CommandMessages.PARTY_MEMBER_LIMIT_REACHED);
+                                playerRef.sendMessage(CommandMessages.PARTY_MEMBER_LIMIT_REACHED);
                             }
                         } else {
-                            player.sendMessage(CommandMessages.NO_PENDING_INVITES);
+                            playerRef.sendMessage(CommandMessages.NO_PENDING_INVITES);
                         }
                     }
                 }, world);

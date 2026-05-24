@@ -29,35 +29,35 @@ public class UnclaimChunkCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef != null) {
+                    Player player = store.getComponent(ref, Player.getComponentType());
+                    if (player != null) {
                         var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                         if (party == null) {
-                            player.sendMessage(CommandMessages.NOT_IN_A_PARTY);
+                            playerRef.sendMessage(CommandMessages.NOT_IN_A_PARTY);
                             return;
                         }
                         if (!party.hasPermission(playerRef.getUuid(), PartyOverrides.PARTY_PROTECTION_CLAIM_UNCLAIM)) {
-                            player.sendMessage(CommandMessages.NO_PERMISSION);
+                            playerRef.sendMessage(CommandMessages.NO_PERMISSION);
                             return;
                         }
-                        var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().getX(), (int) playerRef.getTransform().getPosition().getZ());
+                        var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().x(), (int) playerRef.getTransform().getPosition().z());
                         if (chunk == null) {
-                            player.sendMessage(CommandMessages.NOT_CLAIMED);
+                            playerRef.sendMessage(CommandMessages.NOT_CLAIMED);
                             return;
                         }
                         if (!chunk.getPartyOwner().equals(party.getId())) {
-                            player.sendMessage(CommandMessages.NOT_YOUR_CLAIM);
+                            playerRef.sendMessage(CommandMessages.NOT_YOUR_CLAIM);
                             return;
                         }
-                        ClaimManager.getInstance().unclaimRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().getX(), (int) playerRef.getTransform().getPosition().getZ());
+                        ClaimManager.getInstance().unclaimRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().x(), (int) playerRef.getTransform().getPosition().z());
                         ClaimManager.getInstance().queueMapUpdate(player.getWorld(), chunk.getChunkX(), chunk.getChunkZ());
-                        player.sendMessage(CommandMessages.UNCLAIMED);
+                        playerRef.sendMessage(CommandMessages.UNCLAIMED);
                     }
                 }, world);
             } else {

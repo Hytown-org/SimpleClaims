@@ -2,10 +2,12 @@ package com.buuz135.simpleclaims.util;
 
 import com.hypixel.hytale.protocol.ExtraResources;
 import com.hypixel.hytale.protocol.Packet;
+import com.hypixel.hytale.protocol.io.ChannelConnection;
 import com.hypixel.hytale.protocol.packets.window.CloseWindow;
 import com.hypixel.hytale.protocol.packets.window.OpenWindow;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.io.adapter.PacketFilter;
+import com.hypixel.hytale.server.core.io.netty.NettyUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.netty.channel.Channel;
 
@@ -25,17 +27,20 @@ public final class WindowPacketAdapters {
         if (installed != null) return;
 
         installed = PacketAdapters.registerOutbound((PlayerRef playerRef, Packet serverPacket) -> {
-            Channel ch = playerRef.getPacketHandler().getChannel();
+            ChannelConnection connection = playerRef.getPacketHandler().getChannel();
+            Channel ch = WindowExtraResourcesState.getNettyChannel(connection);
+            if (ch == null) return false;
 
             if (serverPacket instanceof OpenWindow ow) {
                 ExtraResources primed = ch.attr(WindowExtraResourcesState.NEXT_OPEN_EXTRA).getAndSet(null);
                 if (primed != null) {
                     ow.extraResources = primed;
 
-                    var map = WindowExtraResourcesState.getOrCreateMap(ch);
-                    map.put(ow.id, primed);
+                    var map = WindowExtraResourcesState.getOrCreateMap(connection);
+                    if (map != null) map.put(ow.id, primed);
 
-                    WindowExtraResourcesState.getOrCreateBenchSet(ch).add(ow.id);
+                    var benchSet = WindowExtraResourcesState.getOrCreateBenchSet(connection);
+                    if (benchSet != null) benchSet.add(ow.id);
                 }
                 return false;
             }

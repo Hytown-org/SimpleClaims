@@ -13,8 +13,7 @@ import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.Message;
@@ -28,6 +27,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -56,7 +57,7 @@ public class ChunkListGui extends GuiWithParent<ChunkListGui.ChunkListGuiData> {
                 this.requestingConfirmation = index;
             }
             if (action.equals("Delete")) {
-                if (player.hasPermission(CommandMessages.BASE_PERM + "unclaim")) {
+                if (playerRef.hasPermission(CommandMessages.BASE_PERM + "unclaim")) {
                     var split = data.chunkId.split(":");
                     ClaimManager.getInstance().unclaim(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2]));
                     if (Universe.get().getWorlds().containsKey(split[0])) {
@@ -78,7 +79,7 @@ public class ChunkListGui extends GuiWithParent<ChunkListGui.ChunkListGuiData> {
                 if (Universe.get().getWorlds().containsKey(split[0])) {
                     var teleport = new Teleport(Universe.get().getWorlds().get(split[0]),
                             new Vector3d(ChunkUtil.minBlock(Integer.parseInt(split[1])) + 15,
-                                    150, ChunkUtil.minBlock(Integer.parseInt(split[2])) + 15), new Vector3f());
+                                    150, ChunkUtil.minBlock(Integer.parseInt(split[2])) + 15), new Rotation3f());
                     store.putComponent(ref, Teleport.getComponentType(), teleport);
                 }
             }

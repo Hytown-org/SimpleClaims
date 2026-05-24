@@ -33,32 +33,32 @@ public class ChatToggleCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(@Nonnull final CommandContext commandContext) {
         final CommandSender sender = commandContext.sender();
-        if (sender instanceof final Player player) {
-            final Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof final PlayerRef playerRef) {
+            final Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 final Store<EntityStore> store = ref.getStore();
                 final World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef != null) {
+                    final Player player = store.getComponent(ref, Player.getComponentType());
+                    if (player != null) {
                         final var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                         if (party == null) {
-                            player.sendMessage(CommandMessages.NOT_IN_A_PARTY);
+                            playerRef.sendMessage(CommandMessages.NOT_IN_A_PARTY);
                             return;
                         }
 
                         final var result = PartyChatManager.getInstance().togglePartyChat(playerRef.getUuid());
                         switch (result) {
-                            case ACTIVATED -> player.sendMessage(CommandMessages.PARTY_CHAT_ACTIVATED);
-                            case DEACTIVATED -> player.sendMessage(CommandMessages.PARTY_CHAT_DEACTIVATED);
+                            case ACTIVATED -> playerRef.sendMessage(CommandMessages.PARTY_CHAT_ACTIVATED);
+                            case DEACTIVATED -> playerRef.sendMessage(CommandMessages.PARTY_CHAT_DEACTIVATED);
                             case NOT_IN_A_PARTY -> {
-                                player.sendMessage(CommandMessages.NOT_IN_A_PARTY);
+                                playerRef.sendMessage(CommandMessages.NOT_IN_A_PARTY);
                                 return;
                             }
                         }
 
                         if (Main.CONFIG.get().isNotifyPartyChatToggling()) {
-                            this.notifyPartyMembers(party, result, player.getDisplayName());
+                            this.notifyPartyMembers(party, result, playerRef.getUsername());
                         }
                     }
                 }, world);

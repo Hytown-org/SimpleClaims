@@ -65,21 +65,24 @@ public class InteractEventSystem extends EntityEventSystem<EntityStore, UseBlock
             defaultInteract = PartyInfo::isBenchInteractEnabled;
             permission = PartyOverrides.PARTY_PROTECTION_INTERACT_BENCH;
 
-            if (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), event.getTargetBlock().getX(), event.getTargetBlock().getZ(), defaultInteract, permission)) {
+            if (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), event.getTargetBlock().x(), event.getTargetBlock().z(), defaultInteract, permission)) {
                 event.setCancelled(true);
-                playerRef.getPacketHandler().getChannel().attr(WindowExtraResourcesState.NEXT_OPEN_EXTRA).set(null);
+                var connection = playerRef.getPacketHandler().getChannel();
+                var ch = WindowExtraResourcesState.getNettyChannel(connection);
+                if (ch != null) ch.attr(WindowExtraResourcesState.NEXT_OPEN_EXTRA).set(null);
                 return;
             }
 
             PacketHandler ph = playerRef.getPacketHandler();
-            var ch = ph.getChannel();
+            var connection = ph.getChannel();
+            var ch = WindowExtraResourcesState.getNettyChannel(connection);
             World world = player.getWorld();
 
             var targetBlock = event.getTargetBlock();
-            ExtraResources next = buildExtraResourcesForBench(world, playerRef, targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
-            if (next != null) {
+            ExtraResources next = buildExtraResourcesForBench(world, playerRef, targetBlock.x(), targetBlock.y(), targetBlock.z());
+            if (next != null && ch != null) {
                 ch.attr(WindowExtraResourcesState.NEXT_OPEN_EXTRA).set(next);
-                WindowExtraResourcesState.getOrCreateBenchSet(ch).add(0); // provisional id
+                WindowExtraResourcesState.getOrCreateBenchSet(connection).add(0); // provisional id
             }
             return;
         } else if (blockName.contains("door")) {
@@ -92,7 +95,7 @@ public class InteractEventSystem extends EntityEventSystem<EntityStore, UseBlock
             defaultInteract = PartyInfo::isPortalInteractEnabled;
             permission = PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL;
         }
-        if (!ignored && (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), event.getTargetBlock().getX(), event.getTargetBlock().getZ(), defaultInteract, permission))) {
+        if (!ignored && (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), event.getTargetBlock().x(), event.getTargetBlock().z(), defaultInteract, permission))) {
             event.setCancelled(true);
         }
     }

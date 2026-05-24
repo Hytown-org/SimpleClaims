@@ -57,7 +57,7 @@ public class PartyInfoEditGui extends InteractiveCustomUIPage<PartyInfoEditGui.P
     public void handleDataEvent(@NonNullDecl Ref<EntityStore> ref, @NonNullDecl Store<EntityStore> store, @NonNullDecl PartyInfoData data) {
         super.handleDataEvent(ref, store, data);
         var player = store.getComponent(ref, Player.getComponentType());
-        var playerCanModify = this.info.isOwner(playerRef.getUuid()) || this.isOpEdit || this.info.hasPermission(player.getUuid(), PartyOverrides.PARTY_PROTECTION_MODIFY_INFO);
+        var playerCanModify = this.info.isOwner(playerRef.getUuid()) || this.isOpEdit || this.info.hasPermission(playerRef.getUuid(), PartyOverrides.PARTY_PROTECTION_MODIFY_INFO);
         if (!playerCanModify) {
             UICommandBuilder commandBuilder = new UICommandBuilder();
             UIEventBuilder eventBuilder = new UIEventBuilder();
@@ -163,9 +163,9 @@ public class PartyInfoEditGui extends InteractiveCustomUIPage<PartyInfoEditGui.P
         }
         if (data.button != null) {
             if (data.button.equals("Invite") && this.inviteDropdown != null) {
-                if (player.hasPermission(CommandMessages.BASE_PERM + "create-invite")) {
+                if (playerRef.hasPermission(CommandMessages.BASE_PERM + "create-invite")) {
                     if (Main.CONFIG.get().getMaxPartyMembers() != -1 && (this.info.getMembers().length + ClaimManager.getInstance().getPartyInvites().values().stream().filter(partyInvite -> partyInvite.party().equals(this.info.getId())).count()) >= Main.CONFIG.get().getMaxPartyMembers()) {
-                        player.sendMessage(CommandMessages.PARTY_MEMBER_LIMIT_REACHED);
+                        playerRef.sendMessage(CommandMessages.PARTY_MEMBER_LIMIT_REACHED);
                         return;
                     }
                     if (!this.info.isMember(UUID.fromString(this.inviteDropdown))) {
@@ -186,7 +186,7 @@ public class PartyInfoEditGui extends InteractiveCustomUIPage<PartyInfoEditGui.P
             }
             if (data.button.equals("Allies") && this.alliesDropdown != null) {
                 if (Main.CONFIG.get().getMaxPartyAllies() != -1 && (this.info.getPartyAllies().size() + this.info.getPlayerAllies().size()) >= Main.CONFIG.get().getMaxPartyAllies()) {
-                    player.sendMessage(CommandMessages.PARTY_ALLY_LIMIT_REACHED);
+                    playerRef.sendMessage(CommandMessages.PARTY_ALLY_LIMIT_REACHED);
                     return;
                 }
                 var invited = Universe.get().getPlayer(UUID.fromString(this.alliesDropdown));

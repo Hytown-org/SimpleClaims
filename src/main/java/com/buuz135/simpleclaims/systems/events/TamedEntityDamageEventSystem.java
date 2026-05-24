@@ -11,7 +11,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.dependency.Dependency;
 import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.component.query.Query;
-import com.hypixel.hytale.math.vector.Vector3d;
+import org.joml.Vector3d;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
@@ -62,7 +62,7 @@ public class TamedEntityDamageEventSystem extends DamageEventSystem {
         if (world == null) return;
 
         String worldName = world.getName();
-        if (!ClaimManager.getInstance().isAllowedToInteract(attackerPlayerRef.getUuid(), worldName, (int) position.getX(), (int) position.getZ(), PartyInfo::isTamedDamageEnabled, PartyOverrides.PARTY_PROTECTION_TAMED_DAMAGE)) {
+        if (!ClaimManager.getInstance().isAllowedToInteract(attackerPlayerRef.getUuid(), worldName, (int) position.x(), (int) position.z(), PartyInfo::isTamedDamageEnabled, PartyOverrides.PARTY_PROTECTION_TAMED_DAMAGE)) {
             damage.setAmount(0);
         }
     }

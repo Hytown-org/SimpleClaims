@@ -43,8 +43,8 @@ public class GlobalBreakBlockEventSystem extends WorldEventSystem<EntityStore, B
             if (blockName.contains(blocksThatIgnoreInteractRestriction.toLowerCase(Locale.ROOT))) return;
         }
 
-        int x = event.getTargetBlock().getX();
-        int z = event.getTargetBlock().getZ();
+        int x = event.getTargetBlock().x();
+        int z = event.getTargetBlock().z();
 
         // Block all global break events in claimed chunks
         if (!ClaimManager.getInstance().isAllowedToInteract(null, worldName, x, z, PartyInfo::isBlockBreakEnabled, PartyOverrides.PARTY_PROTECTION_BREAK_BLOCKS)) {

@@ -1,3 +1,7 @@
+# 1.0.38
+
+* Ported to version 0.5.0
+
 # 1.0.37
 
 * Added `TamedEntityRoleIdentifiers` config option to allow customizing tamed entity detection

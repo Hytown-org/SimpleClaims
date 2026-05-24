@@ -9,7 +9,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.dependency.Dependency;
 import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.component.query.Query;
-import com.hypixel.hytale.math.vector.Vector3d;
+import org.joml.Vector3d;
 import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.protocol.Transform;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -41,7 +41,7 @@ public class CustomDamageEventSystem extends DamageEventSystem {
                 Player attackerPlayerComponent = (Player) commandBuffer.getComponent(attackerRef, Player.getComponentType());
                 if (attackerPlayerComponent != null) { //The source is a player
                     // && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), (int) transform.getX(), (int) transform.getZ(), PartyInfo::isPVPEnabled)) {
-                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) transform.getX(), (int) transform.getZ());
+                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) transform.x(), (int) transform.z());
                     if (chunk != null) {
                         var partyInfo = ClaimManager.getInstance().getPartyById(chunk.getPartyOwner());
                         if (partyInfo != null && !partyInfo.isPVPEnabled()) {

@@ -32,21 +32,18 @@ public class PartyLeaveCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef != null) {
-                        var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
+                    var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                         if (party == null) {
-                            player.sendMessage(CommandMessages.NOT_IN_A_PARTY);
+                            playerRef.sendMessage(CommandMessages.NOT_IN_A_PARTY);
                             return;
                         }
                         ClaimManager.getInstance().leaveParty(playerRef, party);
-                    }
                 }, world);
             } else {
                 commandContext.sendMessage(MESSAGE_COMMANDS_ERRORS_PLAYER_NOT_IN_WORLD);

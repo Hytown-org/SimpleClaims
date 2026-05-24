@@ -45,7 +45,6 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
 
     @Override
     public void tick(float dt, int index, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store, CommandBuffer<EntityStore> commandBuffer) {
-        if (store.isProcessing()) return;
         Ref<EntityStore> ref = chunk.getReferenceTo(index);
         if (!ref.isValid()) return;
 
@@ -59,8 +58,8 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
         World world = player.getWorld();
         long now = System.currentTimeMillis();
 
-        var ch = playerRef.getPacketHandler().getChannel();
-        var map = WindowExtraResourcesState.getOrCreateMap(ch);
+        var connection = playerRef.getPacketHandler().getChannel();
+        var map = WindowExtraResourcesState.getOrCreateMap(connection);
 
         for (Window w : windows) {
             if (!(w instanceof SimpleCraftingWindow scw)) continue;

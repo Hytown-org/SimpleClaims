@@ -45,7 +45,7 @@ public class BreakBlockEventSystem extends EntityEventSystem<EntityStore, BreakB
         Ref<EntityStore> ref = archetypeChunk.getReferenceTo(index);
         Player player = store.getComponent(ref, Player.getComponentType());
         PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-        if (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), event.getTargetBlock().getX(), event.getTargetBlock().getZ(), PartyInfo::isBlockBreakEnabled, PartyOverrides.PARTY_PROTECTION_BREAK_BLOCKS)) {
+        if (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), event.getTargetBlock().x(), event.getTargetBlock().z(), PartyInfo::isBlockBreakEnabled, PartyOverrides.PARTY_PROTECTION_BREAK_BLOCKS)) {
             event.setCancelled(true);
         }
     }
