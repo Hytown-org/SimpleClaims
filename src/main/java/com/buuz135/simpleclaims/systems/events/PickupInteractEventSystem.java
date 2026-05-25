@@ -37,8 +37,8 @@ public class PickupInteractEventSystem extends EntityEventSystem<EntityStore, In
         if (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(
                 playerRef.getUuid(),
                 player.getWorld().getName(),
-                (int) playerRef.getTransform().getPosition().getX(),
-                (int) playerRef.getTransform().getPosition().getZ(),
+                (int) playerRef.getTransform().getPosition().x(),
+                (int) playerRef.getTransform().getPosition().z(),
                 PartyInfo::isBlockInteractEnabled,
                 PartyOverrides.PARTY_PROTECTION_INTERACT)) {
             event.setCancelled(true); // Doesnt currently work, it gets ignored

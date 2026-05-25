@@ -35,28 +35,28 @@ public class OpModifyChunkAmountCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef != null) {
+                    Player player = store.getComponent(ref, Player.getComponentType());
+                    if (player != null) {
                         var selectedPartyID = ClaimManager.getInstance().getAdminUsageParty().get(playerRef.getUuid());
                         if (selectedPartyID == null) {
-                            player.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
+                            playerRef.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
                             return;
                         }
                         var party = ClaimManager.getInstance().getPartyById(selectedPartyID);
                         if (party == null) {
-                            player.sendMessage(CommandMessages.PARTY_NOT_FOUND);
+                            playerRef.sendMessage(CommandMessages.PARTY_NOT_FOUND);
                             return;
                         }
                         var selectedAmount = amount.get(commandContext);
                         party.setOverride(new PartyOverride(PartyOverrides.CLAIM_CHUNK_BASE, new PartyOverride.PartyOverrideValue("integer", selectedAmount)));
                         ClaimManager.getInstance().saveParty(party);
-                        player.sendMessage(CommandMessages.MODIFIED_MAX_CHUNK_AMOUNT.param("party_name", party.getName()).param("amount", party.getMaxClaimAmount()));
+                        playerRef.sendMessage(CommandMessages.MODIFIED_MAX_CHUNK_AMOUNT.param("party_name", party.getName()).param("amount", party.getMaxClaimAmount()));
                     }
                 }, world);
             } else {

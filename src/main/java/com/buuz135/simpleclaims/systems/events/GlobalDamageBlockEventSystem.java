@@ -37,8 +37,8 @@ public class GlobalDamageBlockEventSystem extends WorldEventSystem<EntityStore, 
         String worldName = world.getName();
         if (worldName == null) return;
 
-        int x = event.getTargetBlock().getX();
-        int z = event.getTargetBlock().getZ();
+        int x = event.getTargetBlock().x();
+        int z = event.getTargetBlock().z();
 
         var blockName = event.getBlockType().getId().toLowerCase(Locale.ROOT);
 

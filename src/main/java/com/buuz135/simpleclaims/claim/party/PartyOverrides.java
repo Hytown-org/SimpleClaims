@@ -17,6 +17,7 @@ public class PartyOverrides {
     public static final String PARTY_PROTECTION_INTERACT_CHAIR = "simpleclaims.party.protection.interact.chair";
     public static final String PARTY_PROTECTION_INTERACT_PORTAL = "simpleclaims.party.protection.interact.portal";
     public static final String PARTY_PROTECTION_COMMAND_BLACKLIST = "simpleclaims.party.protection.command_blacklist";
+    public static final String PARTY_PROTECTION_TAMED_DAMAGE = "simpleclaims.party.protection.tamed_damage";
 
     public static final String PARTY_PROTECTION_MODIFY_INFO = "simpleclaims.party.protection.modify_info";
     public static final String PARTY_PROTECTION_CLAIM_UNCLAIM = "simpleclaims.party.protection.claim_unclaim";

@@ -35,6 +35,9 @@ These settings define the initial permissions and limits for newly created parti
   chunks by default.
 - **DefaultPartyInteractChair** (Boolean, Default: `false`): Whether non-members can interact with chairs in claimed
   chunks by default.
+- **DefaultPartyTamedDamageEnabled** (Boolean, Default: `false`): Whether damage to tamed entities is allowed for
+  non-members
+  in claimed chunks by default.
 - **DefaultPartyInteractPortal** (Boolean, Default: `false`): Whether non-members can interact with portals in claimed
   chunks by default.
 
@@ -64,6 +67,9 @@ These settings control whether party owners are allowed to change specific permi
   interaction permissions.
 - **AllowPartyInteractPortalSettingChanges** (Boolean, Default: `true`): If `true`, party owners can toggle portal
   interaction permissions.
+- **AllowPartyTamedDamageSettingChanges** (Boolean, Default: `true`): If `true`, party owners can toggle tamed entity
+  damage
+  permissions.
 
 ## Command Settings
 
@@ -86,6 +92,8 @@ Global settings that affect claiming and protection across the server.
   claim protections.
 - **BlocksThatIgnoreInteractRestrictions** (String Array, Default: `["gravestone"]`): A list of block IDs that can
   always be interacted with, even in claimed chunks where interactions are otherwise restricted.
+- **TamedEntityRoleIdentifiers** (String Array, Default: `["Tamed_"]`): A list of NPC role name identifiers that
+  identify an entity as tamed. This is used for protecting tamed animals from damage. The check is a "contains" check.
 - **EnableAdjacentChunkRestriction** (Boolean, Default: `false`): If `true`, players can only claim chunks that are
   adjacent to their existing claims.
 - **EnablePerimeterReservation** (Boolean, Default: `false`): If `true`, a perimeter around claimed chunks will be

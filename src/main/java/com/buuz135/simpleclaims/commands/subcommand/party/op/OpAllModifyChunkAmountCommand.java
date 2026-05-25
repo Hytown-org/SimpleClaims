@@ -35,20 +35,20 @@ public class OpAllModifyChunkAmountCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef != null) {
+                    Player player = store.getComponent(ref, Player.getComponentType());
+                    if (player != null) {
                         var selectedAmount = amount.get(commandContext);
                         ClaimManager.getInstance().getParties().values().forEach(party -> {
                             party.setOverride(new PartyOverride(PartyOverrides.CLAIM_CHUNK_BASE, new PartyOverride.PartyOverrideValue("integer", selectedAmount)));
                             ClaimManager.getInstance().saveParty(party);
                         });
-                        player.sendMessage(CommandMessages.MODIFIED_MAX_CHUNK_AMOUNT.param("party_name", "all parties").param("amount", selectedAmount));
+                        playerRef.sendMessage(CommandMessages.MODIFIED_MAX_CHUNK_AMOUNT.param("party_name", "all parties").param("amount", selectedAmount));
                     }
                 }, world);
             } else {

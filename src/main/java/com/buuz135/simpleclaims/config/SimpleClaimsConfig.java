@@ -25,6 +25,7 @@ public class SimpleClaimsConfig {
     private boolean DefaultPartyInteractChair = false;
     private boolean DefaultPartyInteractPortal = false;
     private boolean DefaultPartyCommandBlacklistEnabled = false;
+    private boolean DefaultPartyTamedDamageEnabled = false;
 
     private boolean AllowPartyPVPSetting = true;
     private boolean AllowPartyFriendlyFireSetting = true;
@@ -38,6 +39,7 @@ public class SimpleClaimsConfig {
     private boolean AllowPartyInteractChairSetting = true;
     private boolean AllowPartyInteractPortalSetting = true;
     private boolean AllowPartyCommandBlacklistSetting = true;
+    private boolean AllowPartyTamedDamageSetting = true;
 
     private String[] ClaimCommandAliases = new String[]{"sc", "sc-chunks", "scc", "chunk", "chunks", "claim", "claims"};
     private String[] WorldNameBlacklistForClaiming = new String[0];
@@ -48,6 +50,8 @@ public class SimpleClaimsConfig {
     private boolean EnableParticleBorders = true;
     private boolean RenderClaimNamesOnWorldMap = false;
     private boolean RenderMapInClaimUI = true;
+    private int ClaimUIMapCacheTtlSeconds = 10; // 0 disables cache
+    private float ClaimUIMapResolutionScale = 1.0f;
 
     private boolean ForceSimpleClaimsChunkWorldMap = true;
     private boolean CreativeModeBypassProtection = false;
@@ -55,6 +59,7 @@ public class SimpleClaimsConfig {
     private boolean EnablePerimeterReservation = false;
     private boolean ShowPerimeterReservationOnTheMap = false;
 
+    private String[] TamedEntityRoleIdentifiers = new String[]{"Tamed_"};
     private String[] BlocksThatIgnoreInteractRestrictions = new String[]{"gravestone"};
     // Supports exact command tokens (e.g. "/home") and wildcard prefixes (e.g. "/home*").
     private String[] BlockedCommandsInClaims = new String[]{"/tpa", "/sethome"};
@@ -195,6 +200,10 @@ public class SimpleClaimsConfig {
         return DefaultPartyInteractPortal;
     }
 
+    public boolean isDefaultPartyTamedDamageEnabled() {
+        return DefaultPartyTamedDamageEnabled;
+    }
+
     public boolean isAllowPartyInteractPortalSetting() {
         return AllowPartyInteractPortalSetting;
     }
@@ -205,6 +214,10 @@ public class SimpleClaimsConfig {
 
     public boolean isAllowPartyCommandBlacklistSetting() {
         return AllowPartyCommandBlacklistSetting;
+    }
+    
+    public boolean isAllowPartyTamedDamageSetting() {
+        return AllowPartyTamedDamageSetting;
     }
 
     public boolean isEnableParticleBorders() {
@@ -217,6 +230,10 @@ public class SimpleClaimsConfig {
 
     public String[] getBlockedCommandsInClaims() {
         return BlockedCommandsInClaims;
+    }
+    
+    public String[] getTamedEntityRoleIdentifiers() {
+        return TamedEntityRoleIdentifiers;
     }
 
     public int getMaxPartyMembers() {
@@ -261,5 +278,13 @@ public class SimpleClaimsConfig {
 
     public boolean isShowPerimeterReservationOnTheMap() {
         return ShowPerimeterReservationOnTheMap;
+    }
+
+    public int getClaimUIMapCacheTtlSeconds() {
+        return ClaimUIMapCacheTtlSeconds;
+    }
+
+    public float getClaimUIMapResolutionScale() {
+        return ClaimUIMapResolutionScale;
     }
 }

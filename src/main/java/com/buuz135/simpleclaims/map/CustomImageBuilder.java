@@ -3,12 +3,10 @@ package com.buuz135.simpleclaims.map;
 import com.buuz135.simpleclaims.Main;
 import com.buuz135.simpleclaims.claim.ClaimManager;
 import com.buuz135.simpleclaims.claim.chunk.ChunkInfo;
-import com.buuz135.simpleclaims.claim.chunk.ReservedChunk;
 import com.buuz135.simpleclaims.claim.party.PartyInfo;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.protocol.packets.worldmap.MapImage;
-import com.hypixel.hytale.protocol.packets.worldmap.UpdateWorldMap;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.environment.config.Environment;
 import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
@@ -18,7 +16,6 @@ import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.palette.BitFieldArr;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.FluidSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
-import com.hypixel.hytale.server.core.universe.world.worldmap.provider.chunk.ImageBuilder;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
@@ -369,20 +366,19 @@ public class CustomImageBuilder {
                 this.packImageData(ix, iz);
             }
         }
-        this.image = this.encodeToPalette();
-
         if (partyInfo != null && Main.CONFIG.get().isRenderClaimNamesOnWorldMap()) {
             String name = partyInfo.getName().toUpperCase();
-            drawText(this.image, 1, 1, name, new Color(0, 0, 0, 255).pack());
-            drawText(this.image, 1, 2, name, new Color(0, 0, 0, 255).pack());
-            drawText(this.image, 1, 3, name, new Color(0, 0, 0, 255).pack());
-            drawText(this.image, 2, 1, name, new Color(0, 0, 0, 255).pack());
-            drawText(this.image, 2, 3, name, new Color(0, 0, 0, 255).pack());
-            drawText(this.image, 3, 1, name, new Color(0, 0, 0, 255).pack());
-            drawText(this.image, 3, 2, name, new Color(0, 0, 0, 255).pack());
-            drawText(this.image, 3, 3, name, new Color(0, 0, 0, 255).pack());
-            drawText(this.image, 2, 2, name, new Color(255, 255, 255, 255).pack());
+            drawText(this.rawPixels, 1, 1, name, new Color(0, 0, 0, 255).pack());
+            drawText(this.rawPixels, 1, 2, name, new Color(0, 0, 0, 255).pack());
+            drawText(this.rawPixels, 1, 3, name, new Color(0, 0, 0, 255).pack());
+            drawText(this.rawPixels, 2, 1, name, new Color(0, 0, 0, 255).pack());
+            drawText(this.rawPixels, 2, 3, name, new Color(0, 0, 0, 255).pack());
+            drawText(this.rawPixels, 3, 1, name, new Color(0, 0, 0, 255).pack());
+            drawText(this.rawPixels, 3, 2, name, new Color(0, 0, 0, 255).pack());
+            drawText(this.rawPixels, 3, 3, name, new Color(0, 0, 0, 255).pack());
+            drawText(this.rawPixels, 2, 2, name, new Color(255, 255, 255, 255).pack());
         }
+        this.image = this.encodeToPalette();
 
         return this;
     }
@@ -605,13 +601,13 @@ public class CustomImageBuilder {
     }
 
 
-    private void drawText(MapImage image, int x, int y, String text, int color) {
+    private void drawText(int[] image, int x, int y, String text, int color) {
         for (int i = 0; i < text.length(); i++) {
             drawChar(image, x + i * 4 + 4, y + 4, text.charAt(i), color);
         }
     }
 
-    private void drawChar(MapImage image, int x, int y, char c, int color) {
+    private void drawChar(int[] image, int x, int y, char c, int color) {
         if (c == ' ') return;
         byte[] glyph = getGlyph(c);
         for (int gy = 0; gy < 5; gy++) {
@@ -619,8 +615,8 @@ public class CustomImageBuilder {
                 if (((glyph[gy] >> (2 - gx)) & 1) == 1) {
                     int px = x + gx;
                     int py = y + gy;
-                    if (px >= 0 && px < image.width && py >= 0 && py < image.height) {
-                        image.palette[py * image.width + px] = color;
+                    if (px >= 0 && px < this.imageWidth && py >= 0 && py < this.imageHeight) {
+                        image[py * this.imageWidth + px] = color;
                     }
                 }
             }

@@ -55,6 +55,8 @@ public class PermissionEditGui extends GuiWithParent<PermissionEditGui.Permissio
                 permission = PartyOverrides.PARTY_PROTECTION_INTERACT_CHAIR;
             if (data.action.equals(PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL))
                 permission = PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL;
+            if (data.action.equals(PartyOverrides.PARTY_PROTECTION_TAMED_DAMAGE))
+                permission = PartyOverrides.PARTY_PROTECTION_TAMED_DAMAGE;
             if (data.action.equals(PartyOverrides.PARTY_PROTECTION_MODIFY_INFO))
                 permission = PartyOverrides.PARTY_PROTECTION_MODIFY_INFO;
             if (data.action.equals(PartyOverrides.PARTY_PROTECTION_CLAIM_UNCLAIM))
@@ -93,6 +95,7 @@ public class PermissionEditGui extends GuiWithParent<PermissionEditGui.Permissio
         addPermissionToggle(uiCommandBuilder, uiEventBuilder, "#InteractBench", PartyOverrides.PARTY_PROTECTION_INTERACT_BENCH, playerCanModify);
         addPermissionToggle(uiCommandBuilder, uiEventBuilder, "#InteractChair", PartyOverrides.PARTY_PROTECTION_INTERACT_CHAIR, playerCanModify);
         addPermissionToggle(uiCommandBuilder, uiEventBuilder, "#InteractPortal", PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL, playerCanModify);
+        addPermissionToggle(uiCommandBuilder, uiEventBuilder, "#TamedDamage", PartyOverrides.PARTY_PROTECTION_TAMED_DAMAGE, playerCanModify);
         addPermissionToggle(uiCommandBuilder, uiEventBuilder, "#ModifyInfo", PartyOverrides.PARTY_PROTECTION_MODIFY_INFO, playerCanModify);
         addPermissionToggle(uiCommandBuilder, uiEventBuilder, "#ClaimUnclaim", PartyOverrides.PARTY_PROTECTION_CLAIM_UNCLAIM, playerCanModify);
         addPermissionToggle(uiCommandBuilder, uiEventBuilder, "#InvitePlayers", PartyOverrides.PARTY_PROTECTION_INVITE_PLAYERS, playerCanModify);

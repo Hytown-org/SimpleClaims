@@ -34,7 +34,7 @@ public class PlaceBlockEventSystem extends EntityEventSystem<EntityStore, PlaceB
        Ref<EntityStore> ref = archetypeChunk.getReferenceTo(index);
        Player player = store.getComponent(ref, Player.getComponentType());
         PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-        if (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), event.getTargetBlock().getX(), event.getTargetBlock().getZ(), PartyInfo::isBlockPlaceEnabled, PartyOverrides.PARTY_PROTECTION_PLACE_BLOCKS)) {
+        if (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), event.getTargetBlock().x(), event.getTargetBlock().z(), PartyInfo::isBlockPlaceEnabled, PartyOverrides.PARTY_PROTECTION_PLACE_BLOCKS)) {
            event.setCancelled(true);
        }
     }

@@ -6,7 +6,7 @@ import com.buuz135.simpleclaims.claim.ClaimManager;
 import com.buuz135.simpleclaims.claim.party.PartyInfo;
 import com.buuz135.simpleclaims.claim.party.PartyOverrides;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.math.vector.Vector3d;
+import org.joml.Vector3d;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -34,6 +34,7 @@ public class SimpleClaimsExpansion extends PlaceholderExpansion {
             Map.entry("interact_chair", new InteractionType(PartyInfo::isChairInteractEnabled, PartyOverrides.PARTY_PROTECTION_INTERACT_CHAIR)),
             Map.entry("interact_door", new InteractionType(PartyInfo::isDoorInteractEnabled, PartyOverrides.PARTY_PROTECTION_INTERACT_DOOR)),
             Map.entry("interact_portal", new InteractionType(PartyInfo::isPortalInteractEnabled, PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL)),
+            Map.entry("tamed_damage", new InteractionType(PartyInfo::isTamedDamageEnabled, PartyOverrides.PARTY_PROTECTION_TAMED_DAMAGE)),
             Map.entry("enter", new InteractionType(PartyInfo::isAllowEntryEnabled, PartyOverrides.PARTY_PROTECTION_ALLOW_ENTRY)),
             Map.entry("friendly_fire", new InteractionType(PartyInfo::isFriendlyFireEnabled, PartyOverrides.PARTY_PROTECTION_FRIENDLY_FIRE)),
             Map.entry("pvp", new InteractionType(PartyInfo::isPVPEnabled, PartyOverrides.PARTY_PROTECTION_PVP))
@@ -87,8 +88,8 @@ public class SimpleClaimsExpansion extends PlaceholderExpansion {
             return PlaceholderAPI.booleanValue(CLAIMS.isAllowedToInteract(
                     player.getUuid(),
                     world.getName(),
-                    Double.valueOf(position.getX()).intValue(),
-                    Double.valueOf(position.getZ()).intValue(),
+                    Double.valueOf(position.x()).intValue(),
+                    Double.valueOf(position.z()).intValue(),
                     interaction.interactMethod(),
                     interaction.permission()));
         }

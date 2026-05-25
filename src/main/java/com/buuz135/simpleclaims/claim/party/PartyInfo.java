@@ -39,6 +39,7 @@ public class PartyInfo {
         setOverride(new PartyOverride(PartyOverrides.PARTY_PROTECTION_INTERACT, new PartyOverride.PartyOverrideValue("bool", Main.CONFIG.get().isDefaultPartyBlockInteractEnabled())));
         setOverride(new PartyOverride(PartyOverrides.PARTY_PROTECTION_ALLOW_ENTRY, new PartyOverride.PartyOverrideValue("bool", Main.CONFIG.get().isDefaultPartyAllowEntry())));
         setOverride(new PartyOverride(PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL, new PartyOverride.PartyOverrideValue("bool", Main.CONFIG.get().isDefaultPartyInteractPortal())));
+        setOverride(new PartyOverride(PartyOverrides.PARTY_PROTECTION_TAMED_DAMAGE, new PartyOverride.PartyOverrideValue("bool", Main.CONFIG.get().isDefaultPartyTamedDamageEnabled())));
         this.createdTracked = new ModifiedTracking();
         this.modifiedTracked = new ModifiedTracking();
         this.partyAllies = new HashSet<>();
@@ -306,6 +307,14 @@ public class PartyInfo {
             return (Boolean) override.getValue().getTypedValue();
         }
         return Main.CONFIG.get().isDefaultPartyCommandBlacklistEnabled();
+    }
+    
+    public boolean isTamedDamageEnabled() {
+        var override = this.getOverride(PartyOverrides.PARTY_PROTECTION_TAMED_DAMAGE);
+        if (override != null) {
+            return (Boolean) override.getValue().getTypedValue();
+        }
+        return Main.CONFIG.get().isDefaultPartyTamedDamageEnabled();
     }
 
     public void setOverride(PartyOverride override){

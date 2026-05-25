@@ -1,9 +1,12 @@
 package com.buuz135.simpleclaims.util;
 
 import com.hypixel.hytale.protocol.ExtraResources;
+import com.hypixel.hytale.protocol.io.ChannelConnection;
+import com.hypixel.hytale.server.core.io.netty.NettyUtil;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +23,17 @@ public final class WindowExtraResourcesState {
     public static final AttributeKey<Set<Integer>> BENCH_WINDOW_IDS =
             AttributeKey.valueOf("simpleclaims_bench_window_ids");
 
-    public static Set<Integer> getOrCreateBenchSet(Channel ch) {
+    private static Field CHANNEL_FIELD;
+
+    public static Channel getNettyChannel(ChannelConnection connection) {
+        if (connection instanceof NettyUtil.NettyChannelConnection nettyChannelConnection)
+            return nettyChannelConnection.channel();
+        return null;
+    }
+
+    public static Set<Integer> getOrCreateBenchSet(ChannelConnection chConn) {
+        Channel ch = getNettyChannel(chConn);
+        if (ch == null) return null;
         Set<Integer> s = ch.attr(BENCH_WINDOW_IDS).get();
         if (s == null) {
             s = ConcurrentHashMap.newKeySet();
@@ -29,7 +42,9 @@ public final class WindowExtraResourcesState {
         return s;
     }
 
-    public static Map<Integer, ExtraResources> getOrCreateMap(Channel ch) {
+    public static Map<Integer, ExtraResources> getOrCreateMap(ChannelConnection chConn) {
+        Channel ch = getNettyChannel(chConn);
+        if (ch == null) return null;
         Map<Integer, ExtraResources> m = ch.attr(EXTRA_BY_WINDOW_ID).get();
         if (m == null) {
             m = new ConcurrentHashMap<>();

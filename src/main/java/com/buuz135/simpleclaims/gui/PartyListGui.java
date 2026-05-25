@@ -78,7 +78,7 @@ public class PartyListGui extends InteractiveCustomUIPage<PartyListGui.PartyList
                     playerRef.sendMessage(Message.join(CommandMessages.NOW_USING_PARTY, Message.raw(party.getName())));
                     var player = store.getComponent(ref, Player.getComponentType());
                     var position = store.getComponent(ref, TransformComponent.getComponentType());
-                    player.getPageManager().openCustomPage(ref, store, new ChunkInfoGui(playerRef, player.getWorld().getName(), ChunkUtil.chunkCoordinate(position.getPosition().getX()), ChunkUtil.chunkCoordinate(position.getPosition().getZ()), true));
+                    player.getPageManager().openCustomPage(ref, store, new ChunkInfoGui(playerRef, player.getWorld().getName(), ChunkUtil.chunkCoordinate(position.getPosition().x()), ChunkUtil.chunkCoordinate(position.getPosition().z()), true));
                     return;
                 }
             }

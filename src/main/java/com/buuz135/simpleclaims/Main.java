@@ -33,6 +33,7 @@ import com.hypixel.hytale.server.core.universe.world.worldmap.provider.chunk.Wor
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.unnm3d.codeclib.config.CodecFactory;
+import io.netty.channel.Channel;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.util.concurrent.ScheduledFuture;
@@ -64,6 +65,7 @@ public class Main extends JavaPlugin {
         this.getEntityStoreRegistry().registerSystem(new PlaceBlockEventSystem());
         this.getEntityStoreRegistry().registerSystem(new InteractEventSystem());
         this.getEntityStoreRegistry().registerSystem(new PickupInteractEventSystem());
+        this.getEntityStoreRegistry().registerSystem(new TamedEntityDamageEventSystem());
         this.getEntityStoreRegistry().registerSystem(new TitleTickingSystem(CONFIG.get().getTitleTopClaimTitleText(), CONFIG.get().getWildernessName()));
         if (CONFIG.get().isEnableAlloyEntryTesting())
             this.getEntityStoreRegistry().registerSystem(new EntryTickingSystem());
@@ -102,10 +104,10 @@ public class Main extends JavaPlugin {
         this.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class, (event) -> {
             var player = event.getHolder().getComponent(Player.getComponentType());
             var playerRef = event.getHolder().getComponent(PlayerRef.getComponentType());
-            ClaimManager.getInstance().setPlayerName(playerRef.getUuid(), player.getDisplayName(), System.currentTimeMillis());
+            ClaimManager.getInstance().setPlayerName(playerRef.getUuid(), playerRef.getUsername(), System.currentTimeMillis());
 
-            var ch = playerRef.getPacketHandler().getChannel();
-            WindowExtraResourcesState.getOrCreateMap(ch);
+            var connection = playerRef.getPacketHandler().getChannel();
+            WindowExtraResourcesState.getOrCreateMap(connection);
         });
 
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, (event) -> {
@@ -122,9 +124,12 @@ public class Main extends JavaPlugin {
         this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, (event) -> {
             ClaimManager.getInstance().setPlayerName(event.getPlayerRef().getUuid(), event.getPlayerRef().getUsername(), System.currentTimeMillis());
 
-            var ch = event.getPlayerRef().getPacketHandler().getChannel();
-            var m = ch.attr(WindowExtraResourcesState.EXTRA_BY_WINDOW_ID).get();
-            if (m != null) m.clear();
+            var connection = event.getPlayerRef().getPacketHandler().getChannel();
+            Channel ch = WindowExtraResourcesState.getNettyChannel(connection);
+            if (ch != null) {
+                var m = ch.attr(WindowExtraResourcesState.EXTRA_BY_WINDOW_ID).get();
+                if (m != null) m.clear();
+            }
         });
 
         this.getEventRegistry().registerAsyncGlobal(PlayerChatEvent.class, new PlayerChatListener());

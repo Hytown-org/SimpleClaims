@@ -51,8 +51,8 @@ public class TitleTickingSystem extends EntityTickingSystem<EntityStore> {
 
         var chunkInfo = ClaimManager.getInstance().getChunkRawCoords(
                 player.getWorld().getName(),
-                (int) Math.floor(playerRef.getTransform().getPosition().getX()),
-                (int) Math.floor(playerRef.getTransform().getPosition().getZ())
+                (int) Math.floor(playerRef.getTransform().getPosition().x()),
+                (int) Math.floor(playerRef.getTransform().getPosition().z())
         );
 
         if (chunkInfo != null) {
