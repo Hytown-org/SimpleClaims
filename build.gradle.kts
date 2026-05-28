@@ -109,7 +109,7 @@ tasks.processResources {
             "description" to (project.description ?: ""),
             "website" to website,
             "server_version" to resolvedServerVersion,
-            "entryPoint" to entryPoint
+            "entry_point" to entryPoint
         )
 
     inputs.properties(manifestProps)

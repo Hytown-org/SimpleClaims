@@ -88,7 +88,7 @@ public class Main extends JavaPlugin {
         WindowPacketAdapters.install();
         CommandBlacklistPacketAdapters.install();
         ClaimManager.getInstance();
-        playtimeClaimRewardListener = new PlaytimeClaimRewardListener();
+        playtimeClaimRewardListener = new PlaytimeClaimRewardListener(CONFIG.get());
 
         this.getEventRegistry().registerGlobal(AddWorldEvent.class, (event) -> {
             this.getLogger().at(Level.INFO).log("Registered world: " + event.getWorld().getName());

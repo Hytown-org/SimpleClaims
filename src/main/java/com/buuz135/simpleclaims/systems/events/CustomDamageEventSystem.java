@@ -9,6 +9,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.dependency.Dependency;
 import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.component.query.Query;
+import com.hypixel.hytale.math.vector.Vector3dUtil;
 import org.joml.Vector3d;
 import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.protocol.Transform;
@@ -73,14 +74,14 @@ public class CustomDamageEventSystem extends DamageEventSystem {
     private void killKnockback(Damage damage, Ref<EntityStore> ref, Store<EntityStore> store) {
         KnockbackComponent metaKb = damage.getMetaObject(Damage.KNOCKBACK_COMPONENT);
         if (metaKb != null) {
-            metaKb.setVelocity(Vector3d.ZERO);
+            metaKb.setVelocity(new Vector3d(Vector3dUtil.ZERO));
             metaKb.setDuration(0);
         }
         damage.removeMetaObject(Damage.KNOCKBACK_COMPONENT);
 
         KnockbackComponent entityKb = store.getComponent(ref, KnockbackComponent.getComponentType());
         if (entityKb != null) {
-            entityKb.setVelocity(Vector3d.ZERO);
+            entityKb.setVelocity(new Vector3d(Vector3dUtil.ZERO));
             entityKb.setDuration(0);
         }
     }

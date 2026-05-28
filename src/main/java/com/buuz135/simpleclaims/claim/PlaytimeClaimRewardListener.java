@@ -4,6 +4,7 @@ import com.buuz135.simpleclaims.claim.component.PlaytimeClaimRewardComponent;
 import com.buuz135.simpleclaims.claim.party.PartyOverride;
 import com.buuz135.simpleclaims.claim.party.PartyOverrides;
 import com.buuz135.simpleclaims.commands.CommandMessages;
+import com.buuz135.simpleclaims.config.SimpleClaimsConfig;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -25,8 +26,10 @@ public class PlaytimeClaimRewardListener {
     private static final HytaleLogger log = HytaleLogger.forEnclosingClass();
     private static final int PLAYTIME_MINUTES_PER_CLAIM = 10 * 60;
     private static final int MAX_TOTAL_CLAIMS = 50;
+    private final boolean playtimeRewards;
 
-    public PlaytimeClaimRewardListener() {
+    public PlaytimeClaimRewardListener(SimpleClaimsConfig config) {
+        this.playtimeRewards = config.getDoPlaytimeRewards();
         log.atInfo().log("SimpleClaims playtime reward integration is active");
     }
 
@@ -38,6 +41,11 @@ public class PlaytimeClaimRewardListener {
 
         UUID playerId = playerRef.getUuid();
         log.atInfo().log("requesting Nexus playtime for %s", playerId);
+        if (!playtimeRewards) {
+            evaluatePlaytime(playerId, 0);
+            return;
+        }
+
         playerService.getPlayerStatsAsync(playerId)
                 .thenAccept(stats -> {
                     if (stats == null) {
@@ -58,7 +66,7 @@ public class PlaytimeClaimRewardListener {
             return;
         }
 
-        List<PlayerRef> players = Universe.get().getPlayers();
+        var players = Universe.get().getPlayers();
         if (players.isEmpty()) {
             return;
         }
@@ -69,6 +77,14 @@ public class PlaytimeClaimRewardListener {
         }
 
         log.atInfo().log("requesting Nexus playtime batch for %d player(s)", playerIds.size());
+
+        if (!playtimeRewards) {
+            for (UUID playerId : playerIds) {
+                evaluatePlaytime(playerId, 0);
+            }
+            return;
+        }
+
         playerService.getPlayerStatsBatchAsync(playerIds)
                 .thenAccept(statsByPlayer -> applyBatchPlaytime(playerIds, statsByPlayer))
                 .exceptionally(error -> {
