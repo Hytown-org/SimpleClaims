@@ -67,19 +67,22 @@ public class InteractEventSystem extends EntityEventSystem<EntityStore, UseBlock
 
             if (playerRef != null && !ClaimManager.getInstance().isAllowedToInteract(playerRef.getUuid(), player.getWorld().getName(), event.getTargetBlock().x(), event.getTargetBlock().z(), defaultInteract, permission)) {
                 event.setCancelled(true);
-                WindowExtraResourcesState.setNextOpenExtra(playerRef.getPacketHandler().getChannel(), null);
+                var connection = playerRef.getPacketHandler().getChannel();
+                var ch = WindowExtraResourcesState.getNettyChannel(connection);
+                if (ch != null) ch.attr(WindowExtraResourcesState.NEXT_OPEN_EXTRA).set(null);
                 return;
             }
 
             PacketHandler ph = playerRef.getPacketHandler();
-            var ch = ph.getChannel();
+            var connection = ph.getChannel();
+            var ch = WindowExtraResourcesState.getNettyChannel(connection);
             World world = player.getWorld();
 
             var targetBlock = event.getTargetBlock();
             ExtraResources next = buildExtraResourcesForBench(world, playerRef, targetBlock.x(), targetBlock.y(), targetBlock.z());
-            if (next != null) {
-                WindowExtraResourcesState.setNextOpenExtra(ch, next);
-                WindowExtraResourcesState.getOrCreateBenchSet(ch).add(0); // provisional id
+            if (next != null && ch != null) {
+                ch.attr(WindowExtraResourcesState.NEXT_OPEN_EXTRA).set(next);
+                WindowExtraResourcesState.getOrCreateBenchSet(connection).add(0); // provisional id
             }
             return;
         } else if (blockName.contains("door")) {

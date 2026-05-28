@@ -1,3 +1,25 @@
+# 1.0.38
+
+* Ported to version 0.5.0
+* pt-BR translation - odv1983
+
+# 1.0.37
+
+* Added `TamedEntityRoleIdentifiers` config option to allow customizing tamed entity detection
+
+# 1.0.36
+
+* Added tamed entity damage event system to prevent tamed entities from being damaged in claimed chunks (with party
+  settings), closes #208 closes #121 closes #236 closes #232
+* Added a max world name length in the chunk list GUI
+* Added map asset caching to the claim GUI to improve performance and added scaling to the map to prevent AMD black
+  screen issues
+
+# 1.0.35
+
+* Added some store safety checks for the crafting system
+* Fixed text rendering on the map, closes #231
+
 # 1.0.34
 
 * Fixed workbenches not consuming items properly (with the help of oskar)

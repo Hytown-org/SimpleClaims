@@ -4,10 +4,45 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/../HytownCore" name="HytownCore">
+                <projects>
+                  <project path="$PROJECT_DIR$/../HytownCore" />
+                  <project path="$PROJECT_DIR$/../HytownCore/Camera" />
+                  <project path="$PROJECT_DIR$/../HytownCore/Honeycomb" />
+                  <project path="$PROJECT_DIR$/../HytownCore/HytownBackups" />
+                  <project path="$PROJECT_DIR$/../HytownCore/HytownDungeons" />
+                  <project path="$PROJECT_DIR$/../HytownCore/HytownMatchmaking" />
+                  <project path="$PROJECT_DIR$/../HytownCore/HytownNexus" />
+                  <project path="$PROJECT_DIR$/../HytownCore/HytownObjectives" />
+                  <project path="$PROJECT_DIR$/../HytownCore/HytownQuesting" />
+                  <project path="$PROJECT_DIR$/../HytownCore/HytownSpeakers" />
+                  <project path="$PROJECT_DIR$/../HytownCore/HytownZones" />
+                  <project path="$PROJECT_DIR$/../HytownCore/Instances" />
+                  <project path="$PROJECT_DIR$/../HytownCore/Util" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../HytownCore" />
+            <option value="$PROJECT_DIR$/../HytownCore/Camera" />
+            <option value="$PROJECT_DIR$/../HytownCore/Honeycomb" />
+            <option value="$PROJECT_DIR$/../HytownCore/HytownBackups" />
+            <option value="$PROJECT_DIR$/../HytownCore/HytownDungeons" />
+            <option value="$PROJECT_DIR$/../HytownCore/HytownMatchmaking" />
+            <option value="$PROJECT_DIR$/../HytownCore/HytownNexus" />
+            <option value="$PROJECT_DIR$/../HytownCore/HytownObjectives" />
+            <option value="$PROJECT_DIR$/../HytownCore/HytownQuesting" />
+            <option value="$PROJECT_DIR$/../HytownCore/HytownSpeakers" />
+            <option value="$PROJECT_DIR$/../HytownCore/HytownZones" />
+            <option value="$PROJECT_DIR$/../HytownCore/Instances" />
+            <option value="$PROJECT_DIR$/../HytownCore/Util" />
             <option value="$PROJECT_DIR$" />
           </set>
         </option>

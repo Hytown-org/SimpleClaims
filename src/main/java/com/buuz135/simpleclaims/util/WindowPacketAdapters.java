@@ -7,6 +7,7 @@ import com.hypixel.hytale.protocol.packets.window.CloseWindow;
 import com.hypixel.hytale.protocol.packets.window.OpenWindow;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.io.adapter.PacketFilter;
+import com.hypixel.hytale.server.core.io.netty.NettyUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 import java.lang.reflect.Field;
@@ -26,6 +27,8 @@ public final class WindowPacketAdapters {
 
         installed = PacketAdapters.registerOutbound((PlayerRef playerRef, Packet serverPacket) -> {
             ChannelConnection connection = playerRef.getPacketHandler().getChannel();
+            Channel ch = WindowExtraResourcesState.getNettyChannel(connection);
+            if (ch == null) return false;
 
             if (serverPacket instanceof OpenWindow ow) {
                 ExtraResources primed = WindowExtraResourcesState.takeNextOpenExtra(connection);
@@ -33,9 +36,10 @@ public final class WindowPacketAdapters {
                     ow.extraResources = primed;
 
                     var map = WindowExtraResourcesState.getOrCreateMap(connection);
-                    map.put(ow.id, primed);
+                    if (map != null) map.put(ow.id, primed);
 
-                    WindowExtraResourcesState.getOrCreateBenchSet(connection).add(ow.id);
+                    var benchSet = WindowExtraResourcesState.getOrCreateBenchSet(connection);
+                    if (benchSet != null) benchSet.add(ow.id);
                 }
                 return false;
             }

@@ -34,14 +34,14 @@ public class OpChunkGuiCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = ref.getStore().getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef == null) return;
+                    Player player = store.getComponent(ref, Player.getComponentType());
+                    if (player == null) return;
                     var position = store.getComponent(ref, TransformComponent.getComponentType());
                     player.getPageManager().openCustomPage(ref, store, new ChunkInfoGui(playerRef, player.getWorld().getName(), ChunkUtil.chunkCoordinate(position.getPosition().x()), ChunkUtil.chunkCoordinate(position.getPosition().z()), true));
                 }, world);

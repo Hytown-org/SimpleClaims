@@ -1,20 +1,21 @@
 {
-  "Group": "${manifestGroup}",
-  "Name": "${name}",
-  "Version": "${version}",
-  "Description": "${description}",
+  "Group": "Buuz135",
+  "Name": "SimpleClaims",
+  "Version": "1.0.38",
+  "Description": "A chunk claiming and protection mod. Create parties, claim chunks, and protect your builds from other players.",
   "Authors": [
     {
       "Name": "Buuz135"
     }
   ],
   "Website": "${website}",
-  "ServerVersion": "${server_version}",
+  "ServerVersion": ">=0.5.0",
   "Dependencies": {
     "Hytale:EntityModule": "*",
     "Hytale:InteractionModule": "*",
     "Hytale:Farming": "*",
-    "Hytown:Nexus": "*"
+    "Hytown:Nexus": "*",
+    "Hytale:NPC": "*"
   },
   "OptionalDependencies": {
     "LuckPerms:LuckPerms": "*",

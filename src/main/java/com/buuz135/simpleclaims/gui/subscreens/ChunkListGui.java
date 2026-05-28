@@ -28,6 +28,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -101,7 +102,7 @@ public class ChunkListGui extends GuiWithParent<ChunkListGui.ChunkListGuiData> {
             for (ChunkInfo value : ClaimManager.getInstance().getChunks().get(world).values()) {
                 if (!value.getPartyOwner().equals(this.partyInfo.getId())) continue;
                 uiCommandBuilder.append("#ClaimsCards", "Pages/Buuz135_SimpleClaims_PartyChunkListEntry.ui");
-                uiCommandBuilder.set("#ClaimsCards[" + i + "] #ChunkWorldName.Text", world);
+                uiCommandBuilder.set("#ClaimsCards[" + i + "] #ChunkWorldName.Text", world.substring(0, Math.min(world.length(), 16)));
                 uiCommandBuilder.set("#ClaimsCards[" + i + "] #ChunkPosName.Text", "X: " + (ChunkUtil.minBlock(value.getChunkX()) + 15) + " Z: " + (ChunkUtil.minBlock(value.getChunkZ()) + 15) + "");
                 uiEventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#ClaimsCards[" + i + "] #UnclaimButton", EventData.of("Action", "Unclaim").append("ChunkId", world + ":" + value.getCoordinates()), false);
                 if (isOpEdit) {

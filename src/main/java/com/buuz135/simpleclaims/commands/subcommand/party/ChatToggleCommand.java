@@ -33,14 +33,14 @@ public class ChatToggleCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(@Nonnull final CommandContext commandContext) {
         final CommandSender sender = commandContext.sender();
-        if (sender instanceof final Player player) {
-            final Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof final PlayerRef playerRef) {
+            final Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 final Store<EntityStore> store = ref.getStore();
                 final World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    final PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef != null) {
+                    final Player player = store.getComponent(ref, Player.getComponentType());
+                    if (player != null) {
                         final var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                         if (party == null) {
                             playerRef.sendMessage(CommandMessages.NOT_IN_A_PARTY);

@@ -10,6 +10,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.vector.Transform;
+import org.joml.Vector3d;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
@@ -60,7 +61,7 @@ public class EntryTickingSystem extends EntityTickingSystem<EntityStore> {
 
 
                             store.putComponent(ref, Teleport.getComponentType(), new Teleport(player.getWorld(),
-                                    new Vector3d(lastSafePos),
+                                    new Vector3d(lastSafePos.x(), lastSafePos.y(), lastSafePos.z()),
                                     lastSafePosition.getRotation()));
                             playerRef.sendMessage(TELEPORT_MESSAGE);
                         });

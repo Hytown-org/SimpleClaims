@@ -38,18 +38,18 @@ public class OpCreatePartyCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+                    Player player = store.getComponent(ref, Player.getComponentType());
                     var commandName = commandContext.get(this.name);
-                    if (playerRef != null) {
+                    if (player != null) {
                         var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
 
-                        party = ClaimManager.getInstance().createParty(player, playerRef, true);
+                        party = ClaimManager.getInstance().createParty(playerRef, true);
                         party.setName(commandName);
                         party.setOwner(UUID.randomUUID());
                         party.setMembers(new UUID[]{});

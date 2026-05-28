@@ -37,15 +37,13 @@ public class PartyInviteCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef != null) {
-                        var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
+                    var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                         if (party == null) {
                             playerRef.sendMessage(CommandMessages.NOT_IN_A_PARTY);
                             return;
@@ -73,9 +71,9 @@ public class PartyInviteCommand extends AbstractAsyncCommand {
                             return;
                         }
                         ClaimManager.getInstance().invitePlayerToParty(invitedPlayer, party, playerRef);
-                        playerRef.sendMessage(CommandMessages.PARTY_INVITE_SENT.param("username", invitedPlayer.getUsername()));
-                        invitedPlayer.sendMessage(CommandMessages.PARTY_INVITE_RECEIVED.param("party_name", party.getName()).param("username", playerRef.getUsername()));
-                    }
+                    playerRef.sendMessage(CommandMessages.PARTY_INVITE_SENT.param("username", invitedPlayerPlayer.getPlayerRef().getUsername()));
+                    invitedPlayer.sendMessage(CommandMessages.PARTY_INVITE_RECEIVED.param("party_name", party.getName()).param("username", playerRef.getUsername()));
+
                 }, world);
             } else {
                 commandContext.sendMessage(MESSAGE_COMMANDS_ERRORS_PLAYER_NOT_IN_WORLD);

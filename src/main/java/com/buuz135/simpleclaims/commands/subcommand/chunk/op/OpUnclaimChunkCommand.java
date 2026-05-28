@@ -29,21 +29,20 @@ public class OpUnclaimChunkCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef != null) {
-                        var position = playerRef.getTransform().getPosition();
-                        var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z());
+                    Player player = store.getComponent(ref, Player.getComponentType());
+                    if (player != null) {
+                        var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().x(), (int) playerRef.getTransform().getPosition().z());
                         if (chunk == null) {
                             playerRef.sendMessage(CommandMessages.NOT_CLAIMED);
                             return;
                         }
-                        ClaimManager.getInstance().unclaimRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z());
+                        ClaimManager.getInstance().unclaimRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().x(), (int) playerRef.getTransform().getPosition().z());
                         ClaimManager.getInstance().queueMapUpdate(player.getWorld(), chunk.getChunkX(), chunk.getChunkZ());
                         playerRef.sendMessage(CommandMessages.UNCLAIMED);
                     }

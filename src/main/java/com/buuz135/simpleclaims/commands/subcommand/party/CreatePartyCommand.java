@@ -30,20 +30,20 @@ public class CreatePartyCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = ref.getStore().getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef == null) return;
+                    Player player = ref.getStore().getComponent(ref, Player.getComponentType());
+                    if (player == null) return;
                     var party = ClaimManager.getInstance().getPartyFromPlayer(playerRef.getUuid());
                     if (party != null) {
                         playerRef.sendMessage(CommandMessages.IN_A_PARTY);
                         return;
                     }
-                    party = ClaimManager.getInstance().createParty(player, playerRef, false);
+                    party = ClaimManager.getInstance().createParty(playerRef, false);
                     playerRef.sendMessage(CommandMessages.PARTY_CREATED);
                     player.getPageManager().openCustomPage(ref, store, new PartyInfoEditGui(playerRef, party, false));
                 }, world);

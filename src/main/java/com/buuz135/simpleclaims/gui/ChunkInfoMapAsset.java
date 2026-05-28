@@ -1,5 +1,6 @@
 package com.buuz135.simpleclaims.gui;
 
+import com.buuz135.simpleclaims.Main;
 import com.hypixel.hytale.common.util.ArrayUtil;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.util.MathUtil;
@@ -23,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
 This will generate a map image for the chunks requested, combining them into a single PNG image.
@@ -36,6 +38,7 @@ public class ChunkInfoMapAsset extends CommonAsset {
     // "Buuz135_SimpleClaims" in hex padded with 2 zeros at the start and then padded to 64 characters at the end
     private static final String HASH = "004275757a3133355f53696d706c65436c61696d730000000000000000000000";
     private static final String PATH = "UI/Custom/SimpleClaims/Map.png";
+    private static final ConcurrentHashMap<String, CachedMapAsset> CACHE = new ConcurrentHashMap<>();
 
     private final byte[] data;
 
@@ -59,7 +62,21 @@ public class ChunkInfoMapAsset extends CommonAsset {
         var world = Universe.get().getWorld(worldId);
         if (world == null) return null;
         var manager = world.getWorldMapManager();
-        var partSize = MathUtil.fastFloor(32.0F * manager.getWorldMapSettings().getImageScale());
+        var basePartSize = MathUtil.fastFloor(32.0F * manager.getWorldMapSettings().getImageScale());
+        var resolutionScale = Math.max(0.1F, Math.min(1.0F, 1f));
+        var partSize = Math.max(1, MathUtil.fastFloor(basePartSize * resolutionScale));
+
+        var cacheTtlSeconds = Math.max(0, Main.CONFIG.get().getClaimUIMapCacheTtlSeconds());
+        var cacheTtlMs = cacheTtlSeconds * 1000L;
+        var cacheKey = worldId + ":" + minChunkX + ":" + minChunkZ + ":" + maxChunkX + ":" + maxChunkZ + ":" + partSize;
+        var now = System.currentTimeMillis();
+        if (cacheTtlMs > 0L) {
+            var cached = CACHE.get(cacheKey);
+            if (cached != null && (now - cached.createdAtMs) <= cacheTtlMs) {
+                return cached.asset;
+            }
+        }
+
         var chunks = new LongArraySet();
         for (int x = minChunkX; x <= maxChunkX; x++) {
             for (int z = minChunkZ; z <= maxChunkZ; z++) {
@@ -67,7 +84,7 @@ public class ChunkInfoMapAsset extends CommonAsset {
             }
         }
 
-        return ChunkWorldMap.INSTANCE.generate(world, partSize, partSize, chunks).thenApply(map -> {
+        var generated = ChunkWorldMap.INSTANCE.generate(world, partSize, partSize, chunks).thenApply(map -> {
             var image = new BufferedImage(
                     partSize * (maxChunkX - minChunkX + 1),
                     partSize * (maxChunkZ - minChunkZ + 1),
@@ -115,6 +132,21 @@ public class ChunkInfoMapAsset extends CommonAsset {
                 return null;
             }
         });
+        if (cacheTtlMs > 0L) {
+            CACHE.put(cacheKey, new CachedMapAsset(now, generated));
+            generated.whenComplete((asset, throwable) -> {
+                if (throwable != null || asset == null) {
+                    CACHE.remove(cacheKey);
+                }
+            });
+            pruneExpiredEntries(now, cacheTtlMs);
+        }
+        return generated;
+    }
+
+    private static void pruneExpiredEntries(long now, long ttlMs) {
+        if (CACHE.size() < 128) return;
+        CACHE.entrySet().removeIf(entry -> (now - entry.getValue().createdAtMs) > ttlMs);
     }
 
     public static int[] getPixels(MapImage image) {
@@ -145,5 +177,8 @@ public class ChunkInfoMapAsset extends CommonAsset {
         packets[packets.length - 1] = new AssetFinalize();
         handler.write(packets);
         handler.writeNoCache(new RequestCommonAssetsRebuild());
+    }
+
+    private record CachedMapAsset(long createdAtMs, CompletableFuture<ChunkInfoMapAsset> asset) {
     }
 }

@@ -13,7 +13,6 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.Message;
@@ -64,6 +63,9 @@ public class InteractGui extends GuiWithParent<InteractGui.ChunkListGuiData> {
             if (data.action.equals("InteractPortalSetting")) {
                 this.partyInfo.setOverride(new PartyOverride(PartyOverrides.PARTY_PROTECTION_INTERACT_PORTAL, new PartyOverride.PartyOverrideValue("bool", !this.partyInfo.isPortalInteractEnabled())));
             }
+            if (data.action.equals("TamedDamageSetting")) {
+                this.partyInfo.setOverride(new PartyOverride(PartyOverrides.PARTY_PROTECTION_TAMED_DAMAGE, new PartyOverride.PartyOverrideValue("bool", !this.partyInfo.isTamedDamageEnabled())));
+            }
             ClaimManager.getInstance().saveParty(this.partyInfo);
             UICommandBuilder commandBuilder = new UICommandBuilder();
             UIEventBuilder eventBuilder = new UIEventBuilder();
@@ -101,6 +103,10 @@ public class InteractGui extends GuiWithParent<InteractGui.ChunkListGuiData> {
         uiCommandBuilder.set("#InteractPortalSetting #CheckBox.Value", this.partyInfo.isPortalInteractEnabled());
         uiCommandBuilder.set("#InteractPortalSetting #CheckBox.Disabled", !playerCanModify || !Main.CONFIG.get().isAllowPartyInteractPortalSetting());
         uiEventBuilder.addEventBinding(CustomUIEventBindingType.ValueChanged, "#InteractPortalSetting #CheckBox", EventData.of("Action", "InteractPortalSetting"), false);
+
+        uiCommandBuilder.set("#TamedDamageSetting #CheckBox.Value", this.partyInfo.isTamedDamageEnabled());
+        uiCommandBuilder.set("#TamedDamageSetting #CheckBox.Disabled", !playerCanModify || !Main.CONFIG.get().isAllowPartyTamedDamageSetting());
+        uiEventBuilder.addEventBinding(CustomUIEventBindingType.ValueChanged, "#TamedDamageSetting #CheckBox", EventData.of("Action", "TamedDamageSetting"), false);
     }
 
     public static class ChunkListGuiData extends GuiWithParentData {

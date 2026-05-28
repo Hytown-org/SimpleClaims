@@ -31,15 +31,14 @@ public class OpClaimChunkCommand extends AbstractAsyncCommand {
     @Override
     protected CompletableFuture<Void> executeAsync(CommandContext commandContext) {
         CommandSender sender = commandContext.sender();
-        if (sender instanceof Player player) {
-            Ref<EntityStore> ref = player.getReference();
+        if (sender instanceof PlayerRef playerRef) {
+            Ref<EntityStore> ref = playerRef.getReference();
             if (ref != null && ref.isValid()) {
                 Store<EntityStore> store = ref.getStore();
                 World world = store.getExternalData().getWorld();
                 return CompletableFuture.runAsync(() -> {
-                    PlayerRef playerRef = ref.getStore().getComponent(ref, PlayerRef.getComponentType());
-                    if (playerRef == null) return;
-                    var position = playerRef.getTransform().getPosition();
+                    Player player = store.getComponent(ref, Player.getComponentType());
+                    if (player == null) return;
                     var selectedPartyID = ClaimManager.getInstance().getAdminUsageParty().get(playerRef.getUuid());
                     if (selectedPartyID == null) {
                         playerRef.sendMessage(CommandMessages.ADMIN_PARTY_NOT_SELECTED);
@@ -50,7 +49,7 @@ public class OpClaimChunkCommand extends AbstractAsyncCommand {
                         playerRef.sendMessage(CommandMessages.PARTY_NOT_FOUND);
                         return;
                     }
-                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z());
+                    var chunk = ClaimManager.getInstance().getChunkRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().x(), (int) playerRef.getTransform().getPosition().z());
                     if (chunk != null) {
                         playerRef.sendMessage(chunk.getPartyOwner().equals(party.getId()) ? CommandMessages.ALREADY_CLAIMED_BY_YOU : CommandMessages.ALREADY_CLAIMED_BY_ANOTHER_PLAYER);
                         return;
@@ -60,7 +59,7 @@ public class OpClaimChunkCommand extends AbstractAsyncCommand {
                         playerRef.sendMessage(CommandMessages.NOT_ENOUGH_CHUNKS);
                         return;
                     }
-                    var chunkInfo = ClaimManager.getInstance().claimChunkByRawCoords(player.getWorld().getName(), (int) position.x(), (int) position.z(), party, player, playerRef);
+                    var chunkInfo = ClaimManager.getInstance().claimChunkByRawCoords(player.getWorld().getName(), (int) playerRef.getTransform().getPosition().x(), (int) playerRef.getTransform().getPosition().z(), party, player, playerRef);
                     ClaimManager.getInstance().queueMapUpdate(player.getWorld(), chunkInfo.getChunkX(), chunkInfo.getChunkZ());
                     playerRef.sendMessage(CommandMessages.CLAIMED);
                 }, world);
