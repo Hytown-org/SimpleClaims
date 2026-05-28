@@ -28,7 +28,9 @@ public class PlaytimeClaimRewardListener {
     private static final HytaleLogger log = HytaleLogger.forEnclosingClass();
     private static final int PLAYTIME_MINUTES_PER_CLAIM = 10 * 60;
     private static final int MAX_TOTAL_CLAIMS = 50;
+    private static final String UNKNOWN_SERVER_ID = "unknown";
     private final boolean playtimeRewards;
+    private boolean nexusUnavailableLogged;
 
     public PlaytimeClaimRewardListener(SimpleClaimsConfig config) {
         this.playtimeRewards = config.getDoPlaytimeRewards();

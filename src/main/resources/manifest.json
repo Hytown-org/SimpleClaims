@@ -22,6 +22,6 @@
     "HelpChat:PlaceholderAPI": "*"
   },
   "DisabledByDefault": false,
-  "Main": "${entryPoint}",
+  "Main": "${entry_point}",
   "IncludesAssetPack": true
 }

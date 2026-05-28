@@ -7,8 +7,8 @@ import com.hypixel.hytale.protocol.packets.window.CloseWindow;
 import com.hypixel.hytale.protocol.packets.window.OpenWindow;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.io.adapter.PacketFilter;
-import com.hypixel.hytale.server.core.io.netty.NettyUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import io.netty.channel.Channel;
 
 import java.lang.reflect.Field;
 import java.util.Map;
