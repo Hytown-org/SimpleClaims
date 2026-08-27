@@ -213,7 +213,7 @@ public class CustomImageBuilder {
                 int x = ix * this.blockStepX;
                 int z = iz * this.blockStepZ;
                 short height = this.worldChunk.getHeight(x, z);
-                int tint = this.worldChunk.getTint(x, z);
+                int tint = this.worldChunk.getBlockChunk().getTint(x, z);
                 this.heightSamples[sampleIndex] = height;
                 this.tintSamples[sampleIndex] = tint;
                 int blockId = this.worldChunk.getBlock(x, height, z);

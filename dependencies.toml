@@ -1,0 +1,12 @@
+[versions]
+hytown-plugin = "0.3.5"
+
+hytown-nexus = "+"
+
+[libraries]
+hytown-nexus = { module = "com.hytown:HytownNexus", version.ref = "hytown-nexus" }
+
+[plugins]
+hytown-build = { id = "hytown.build", version.ref = "hytown-plugin" }
+hytown-publishing = { id = "hytown.publishing", version.ref = "hytown-plugin" }
+hytown-devServer = { id = "hytown.dev-server", version.ref = "hytown-plugin" }
