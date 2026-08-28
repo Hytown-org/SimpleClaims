@@ -13,9 +13,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.hytown.nexus.NexusPlugin;
-import com.hytown.nexus.dto.PlayerStatsResponse;
-import com.hytown.nexus.service.NexusPlayerService;
+import org.hytown.nexus.NexusPlugin;
+import org.hytown.nexus.dto.PlayerStatsResponse;
+import org.hytown.nexus.service.NexusPlayerService;
 
 import java.util.ArrayList;
 import java.util.Collection;
