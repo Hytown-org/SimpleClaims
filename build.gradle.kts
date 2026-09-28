@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.buuz135"
-version = "1.0.41"
+version = "1.0.43"
 description = "A chunk claiming and protection mod. Create parties, claim chunks, and protect your builds from other players."
 
 repositories {

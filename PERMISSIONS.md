@@ -101,3 +101,15 @@ Some permissions are dynamic and require a value to be appended to the end of th
 - `simpleclaims.player.claim_chunk_gain_minutes.<amount>`: Sets how often (in minutes) a player will gain another claim
   chunk by play time. This overrides the `ClaimChunkGainInMinutes` config value. Only works if the value is greater than
   0.
+
+### Rank bonus (HytownNexus)
+
+Paid ranks can grant extra claim chunks through the HytownNexus `extra_claim_chunks` perk. The bonus is added on top
+of the base amount described above: the player's `simpleclaims.party.claim_chunk_amount.<amount>` permission, or the
+config default when they have no such permission. So a ranked player with no permission node gets
+`config default + rank bonus`, and a ranked player with `claim_chunk_amount.50` gets `50 + rank bonus`.
+
+- In legacy mode (`ScaleClaimLimitByMembers` off) only the party owner's rank counts.
+- In scaling mode every member's own rank bonus is added to their contribution.
+- Admin overrides set with `admin-modify-chunk` are absolute and replace the base entirely, rank bonus included.
+- When the Nexus plugin is unavailable the bonus is simply 0.

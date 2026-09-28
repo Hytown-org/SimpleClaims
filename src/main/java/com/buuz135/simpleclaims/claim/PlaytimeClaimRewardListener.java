@@ -155,7 +155,12 @@ public class PlaytimeClaimRewardListener {
             return;
         }
 
-        int remainingClaims = Math.max(0, MAX_TOTAL_CLAIMS - party.getMaxClaimAmount());
+        // The playtime cap limits claims earned from the base allowance, admin
+        // bonus and playtime. Rank bonus chunks sit on top of it; counting them
+        // here would let playtime fill the rank's share, so every long-time
+        // player would end at MAX_TOTAL_CLAIMS whatever their rank.
+        int earnedClaims = party.getMaxClaimAmount() - party.getRankBonusChunks();
+        int remainingClaims = Math.max(0, MAX_TOTAL_CLAIMS - earnedClaims);
         if (remainingClaims <= 0) {
             store.putComponent(ref, PlaytimeClaimRewardComponent.getComponentType(), reward);
             return;

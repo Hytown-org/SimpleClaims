@@ -159,27 +159,53 @@ public class PartyInfo {
             return legacyValue;
         }
         
-        // No override - calculate from permissions/config
+        // No override - calculate from permissions/config (+ rank bonus)
         if (!Main.CONFIG.get().isScaleClaimLimitByMembers()) {
-            // Legacy mode: only owner's permission or config default
-            var amount = Permissions.getPermissionClaimAmount(owner);
-            if (amount != -1) {
-                return amount;
-            }
-            return Main.CONFIG.get().getDefaultPartyClaimsAmount();
+            // Legacy mode: only the owner's permission or config default, plus the owner's rank bonus
+            return resolveBaseClaimAmount(owner);
         } else {
-            // Scaling mode: sum all members' permissions or config defaults
+            // Scaling mode: sum all members' permissions or config defaults, each plus their rank bonus
             int total = 0;
             for (UUID member : getAllMembers()) {
-                var amount = Permissions.getPermissionClaimAmount(member);
-                if (amount != -1) {
-                    total += amount;
-                } else {
-                    total += Main.CONFIG.get().getDefaultPartyClaimsAmount();
-                }
+                total += resolveBaseClaimAmount(member);
             }
             return total;
         }
+    }
+
+    /**
+     * Base chunk allowance one player contributes: their highest
+     * {@code simpleclaims.party.claim_chunk_amount.<n>} permission, or the config
+     * default when they hold no such node ({@code -1} sentinel from
+     * {@link Permissions#getPermissionClaimAmount(UUID)}), plus any HytownNexus rank
+     * bonus. A ranked player without a permission node therefore lands on
+     * config default + bonus, never the bonus alone.
+     */
+    private static int resolveBaseClaimAmount(UUID player) {
+        int amount = Permissions.getPermissionClaimAmount(player);
+        int base = amount != -1 ? amount : Main.CONFIG.get().getDefaultPartyClaimsAmount();
+        return base + Permissions.getRankBonusClaimAmount(player);
+    }
+
+    /**
+     * The part of {@link #getBaseClaimAmount()} that comes from HytownNexus ranks:
+     * the owner's bonus, or every member's when the limit scales with members.
+     * 0 when an admin base override replaces the permission/config base, since
+     * overrides are absolute and carry no rank bonus.
+     */
+    public int getRankBonusChunks() {
+        if (this.getOverride(PartyOverrides.CLAIM_CHUNK_BASE) != null
+                || this.getOverride(PartyOverrides.CLAIM_CHUNK_AMOUNT) != null) {
+            return 0;
+        }
+        if (!Main.CONFIG.get().isScaleClaimLimitByMembers()) {
+            return Permissions.getRankBonusClaimAmount(owner);
+        }
+        int total = 0;
+        for (UUID member : getAllMembers()) {
+            total += Permissions.getRankBonusClaimAmount(member);
+        }
+        return total;
     }
 
     public int getBonusChunks() {
