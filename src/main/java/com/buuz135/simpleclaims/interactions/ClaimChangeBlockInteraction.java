@@ -1,6 +1,7 @@
 package com.buuz135.simpleclaims.interactions;
 
 import com.buuz135.simpleclaims.util.ClaimActorResolver;
+import com.buuz135.simpleclaims.util.WorldBlocks;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.protocol.InteractionState;
@@ -40,7 +41,7 @@ public class ClaimChangeBlockInteraction extends ChangeBlockInteraction {
     }
 
     private static boolean canBreakBlock(@NonNullDecl InteractionContext context, @NonNullDecl World world, @NonNullDecl Vector3i targetBlock) {
-        var blockType = world.getBlockType(targetBlock);
+        var blockType = WorldBlocks.getBlockType(world, targetBlock);
         var blockId = blockType != null ? blockType.getId() : "";
         return ClaimActorResolver.isBlockBreakAllowed(ClaimActorResolver.resolvePlayerUuid(context), world.getName(), targetBlock.x(), targetBlock.z(), blockId);
     }

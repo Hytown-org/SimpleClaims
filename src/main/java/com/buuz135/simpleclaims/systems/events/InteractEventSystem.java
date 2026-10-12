@@ -7,6 +7,7 @@ import com.buuz135.simpleclaims.claim.party.PartyOverrides;
 import com.buuz135.simpleclaims.systems.tick.CraftingUiQuantitiesSystem;
 import com.buuz135.simpleclaims.util.BenchChestCache;
 import com.buuz135.simpleclaims.util.WindowExtraResourcesState;
+import com.buuz135.simpleclaims.util.WorldBlocks;
 import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -27,6 +28,7 @@ import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.io.PacketHandler;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.accessor.SectionReader;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -103,9 +105,9 @@ public class InteractEventSystem extends EntityEventSystem<EntityStore, UseBlock
     private static ExtraResources buildExtraResourcesForBench(World world, PlayerRef playerRef, int bx, int by, int bz) {
         var chests = BenchChestCache.getAllowedChests(world, playerRef, bx, by, bz);
 
-        var holder = world.getBlockComponentHolder(bx, by, bz);
+        var holder = new SectionReader(world.getChunkStore()).getBlockComponentHolder(bx, by, bz);
         if (holder == null) return null;
-        var block = world.getBlockType(bx, by, bz);
+        var block = WorldBlocks.getBlockType(world, bx, by, bz);
         if (block == null) return null;
         var bench = block.getBench();
         if (bench == null) return null;

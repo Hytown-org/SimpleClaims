@@ -5,6 +5,7 @@ import com.buuz135.simpleclaims.Main;
 import com.buuz135.simpleclaims.claim.ClaimManager;
 import com.buuz135.simpleclaims.claim.party.PartyInfo;
 import com.buuz135.simpleclaims.claim.party.PartyOverrides;
+import com.buuz135.simpleclaims.util.WorldBlocks;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
@@ -47,8 +48,8 @@ public class ClaimUseBlockInteraction extends UseBlockInteraction {
         Predicate<PartyInfo> defaultInteract = PartyInfo::isBlockInteractEnabled;
         String permission = PartyOverrides.PARTY_PROTECTION_INTERACT;
         var blockName = "";
-        if (world.getBlockType(targetBlock) != null) {
-            blockName = world.getBlockType(targetBlock).getId().toLowerCase(Locale.ROOT);
+        if (WorldBlocks.getBlockType(world, targetBlock) != null) {
+            blockName = WorldBlocks.getBlockType(world, targetBlock).getId().toLowerCase(Locale.ROOT);
         }
         var ignored = false;
 
@@ -93,7 +94,7 @@ public class ClaimUseBlockInteraction extends UseBlockInteraction {
         PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
         Predicate<PartyInfo> defaultInteract = PartyInfo::isBlockInteractEnabled;
         String permission = PartyOverrides.PARTY_PROTECTION_INTERACT;
-        var blockName = world.getBlockType(targetBlock).getId().toLowerCase(Locale.ROOT);
+        var blockName = WorldBlocks.getBlockType(world, targetBlock).getId().toLowerCase(Locale.ROOT);
         var ignored = false;
 
         for (String blocksThatIgnoreInteractRestriction : Main.CONFIG.get().getBlocksThatIgnoreInteractRestrictions()) {
