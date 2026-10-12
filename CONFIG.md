@@ -98,6 +98,9 @@ Global settings that affect claiming and protection across the server.
   adjacent to their existing claims.
 - **EnablePerimeterReservation** (Boolean, Default: `false`): If `true`, a perimeter around claimed chunks will be
   reserved, preventing others from claiming too close.
+- **WorldEventClaimBufferChunks** (Integer, Default: `1`): How many chunks around a claim world events (like Goblin
+  Breaches) are kept out of. `0` only keeps them out of the claimed chunks themselves. Worlds in `FullWorldProtection`
+  get no world event spawns at all. Use `-1` to let world events spawn anywhere, claims included.
 - **PartyInactivityHours** (Integer, Default: `-1`): The number of hours a party can be inactive before it is
   automatically disbanded. Use `-1` to disable this feature. All members of the party must be inactive for this to
   trigger.

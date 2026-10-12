@@ -59,6 +59,7 @@ public class SimpleClaimsConfig {
     private boolean EnableAdjacentChunkRestriction = false;
     private boolean EnablePerimeterReservation = false;
     private boolean ShowPerimeterReservationOnTheMap = false;
+    private int WorldEventClaimBufferChunks = 1; // Chunks around claims where world events can't spawn. 0 = only the claim itself, -1 to disable
 
     private String[] TamedEntityRoleIdentifiers = new String[]{"Tamed_"};
     private String[] BlocksThatIgnoreInteractRestrictions = new String[]{"gravestone"};
@@ -279,6 +280,10 @@ public class SimpleClaimsConfig {
 
     public boolean isShowPerimeterReservationOnTheMap() {
         return ShowPerimeterReservationOnTheMap;
+    }
+
+    public int getWorldEventClaimBufferChunks() {
+        return WorldEventClaimBufferChunks;
     }
 
     public int getClaimUIMapCacheTtlSeconds() {

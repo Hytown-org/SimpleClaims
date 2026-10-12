@@ -14,6 +14,7 @@
     "Hytale:EntityModule": "*",
     "Hytale:InteractionModule": "*",
     "Hytale:Farming": "*",
+    "Hytale:Wilderness": "*",
     "Hytown:Nexus": "*",
     "Hytale:NPC": "*"
   },

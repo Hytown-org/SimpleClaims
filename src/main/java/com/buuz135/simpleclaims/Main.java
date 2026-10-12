@@ -16,6 +16,9 @@ import com.buuz135.simpleclaims.util.PartyInactivityThread;
 import com.buuz135.simpleclaims.util.CommandBlacklistPacketAdapters;
 import com.buuz135.simpleclaims.util.WindowExtraResourcesState;
 import com.buuz135.simpleclaims.util.WindowPacketAdapters;
+import com.buuz135.simpleclaims.worldevents.ClaimWildernessLocation;
+import com.hypixel.hytale.builtin.adventure.wilderness.component.WildernessLocation;
+import com.hypixel.hytale.builtin.adventure.worldevents.condition.location.EventLocation;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -143,6 +146,9 @@ public class Main extends JavaPlugin {
         interaction.register("ChangeBlock", ClaimChangeBlockInteraction.class, ClaimChangeBlockInteraction.CUSTOM_CODEC);
         interaction.register("HarvestCrop", ClaimHarvestCropBlockInteraction.class, ClaimHarvestCropBlockInteraction.CUSTOM_CODEC);
         interaction.register("UseCaptureCrate", ClaimUseCaptureCrateInteraction.class, ClaimUseCaptureCrateInteraction.CUSTOM_CODEC);
+
+        // Replaces the built-in world event location so events like Goblin Breaches don't spawn in or next to claims.
+        getCodecRegistry(EventLocation.Config.TYPE_CODEC).register(WildernessLocation.ID, ClaimWildernessLocation.Config.class, ClaimWildernessLocation.Config.CUSTOM_CODEC);
 
         partyInactivityTickingSystem = new PartyInactivityThread();
         partyInactivityTickingSystem.start();
