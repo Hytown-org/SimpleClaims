@@ -1,6 +1,7 @@
 package com.buuz135.simpleclaims.systems.tick;
 
 import com.buuz135.simpleclaims.util.BenchChestCache;
+import com.buuz135.simpleclaims.util.ClaimFilteredExtraResourcesSection;
 import com.buuz135.simpleclaims.util.WindowExtraResourcesState;
 import com.buuz135.simpleclaims.util.WindowReflection;
 import com.buuz135.simpleclaims.util.WorldBlocks;
@@ -41,6 +42,7 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
 
     private final Map<SimpleCraftingWindow, Long> nextAllowedMs = new ConcurrentHashMap<>();
     private final Map<SimpleCraftingWindow, Integer> lastHash = new ConcurrentHashMap<>();
+    private final Map<SimpleCraftingWindow, ItemContainer> lastInstalled = new ConcurrentHashMap<>();
     private final Set<SimpleCraftingWindow> initialized = new ConcurrentSet<>();
 
 
@@ -65,12 +67,30 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
         for (Window w : windows) {
             if (!(w instanceof SimpleCraftingWindow scw)) continue;
 
-            boolean firstTime = !initialized.contains(scw);
-            if (!firstTime) {
+            MaterialExtraResourcesSection section = WindowReflection.getExtraSection(scw);
+
+            // Swap in the filtering section so the synchronous rebuild inside handleAction
+            // (BenchWindow.getExtraResourcesSection -> CraftingManager.feedExtraResourcesSection)
+            // is claim-filtered at the moment it happens; this system cannot interpose there.
+            if (!(section instanceof ClaimFilteredExtraResourcesSection)
+                    && WindowReflection.swapExtraSection(scw, new ClaimFilteredExtraResourcesSection(scw))) {
+                section = WindowReflection.getExtraSection(scw);
+            }
+
+            boolean firstTime = initialized.add(scw);
+            if (firstTime) {
+                scw.registerCloseEvent(event -> forget(scw));
+            }
+
+            // The game rebuilt the section since we last filled it (every craft click invalidates
+            // it): re-apply at once, skipping the throttle and the count fingerprint.
+            boolean rebuilt = section.getItemContainer() != lastInstalled.get(scw);
+
+            if (!firstTime && !rebuilt) {
                 long allowedAt = nextAllowedMs.getOrDefault(scw, 0L);
                 if (now < allowedAt) continue;
-                nextAllowedMs.put(scw, now + 500L);
             }
+            nextAllowedMs.put(scw, now + 500L);
 
             BenchBlock benchBlock = WindowReflection.getBenchBlock(scw);
 
@@ -88,26 +108,30 @@ public class CraftingUiQuantitiesSystem extends EntityTickingSystem<EntityStore>
             int hash = fingerprintCounts(counts);
 
             Integer prev = lastHash.get(scw);
-            if (prev != null && prev == hash) continue;
+            if (!firstTime && !rebuilt && prev != null && prev == hash) continue;
 
-            MaterialExtraResourcesSection section = WindowReflection.getExtraSection(scw);
-            section.setItemContainer(buildUiContainer(chests));
-            section.setExtraMaterials(counts);
-            section.setValid(true);
+            ItemContainer ui = buildUiContainer(chests);
+            if (section instanceof ClaimFilteredExtraResourcesSection filtered) {
+                filtered.applyFiltered(ui, counts);
+            } else {
+                // Swap refused by the JVM: legacy behavior, this system re-installs the filter.
+                section.setItemContainer(ui);
+                section.setExtraMaterials(counts);
+                section.setValid(true);
+            }
 
+            lastInstalled.put(scw, ui);
             map.put(scw.getId(), section.toPacket());
             lastHash.put(scw, hash);
             WindowReflection.invalidate(scw);
-            if (initialized.add(scw)) {
-                WindowReflection.invalidate(scw);
-                // start throttle window after first init
-                nextAllowedMs.put(scw, now + 500L);
-            }
         }
+    }
 
-        nextAllowedMs.keySet().removeIf(win -> !windows.contains(win));
-        lastHash.keySet().removeIf(win -> !windows.contains(win));
-        initialized.removeIf(win -> !windows.contains(win));
+    private void forget(SimpleCraftingWindow scw) {
+        nextAllowedMs.remove(scw);
+        lastHash.remove(scw);
+        lastInstalled.remove(scw);
+        initialized.remove(scw);
     }
 
     public static ItemQuantity[] computeCounts(Bench bench, int tierLevel, List<ItemContainer> chests) {

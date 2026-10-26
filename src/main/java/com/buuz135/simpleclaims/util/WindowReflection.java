@@ -7,9 +7,13 @@ import com.hypixel.hytale.server.core.entity.entities.player.windows.Window;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class WindowReflection {
     private WindowReflection() {}
+
+    private static volatile boolean swapFailureLogged;
 
     public static final Field BENCHSTATE_FIELD = field(BenchWindow.class, "benchBlock");
     public static final Field EXTRARES_FIELD = field(BenchWindow.class, "extraResourcesSection");
@@ -45,6 +49,25 @@ public final class WindowReflection {
     public static MaterialExtraResourcesSection getExtraSection(BenchWindow bw) {
         try { return (MaterialExtraResourcesSection) EXTRARES_FIELD.get(bw); }
         catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    /**
+     * Replaces the window's extra-resources section (a {@code private final} instance field, which
+     * reflection may write once {@code setAccessible(true)} has succeeded). Returns false when the
+     * JVM refuses the write; callers then stay on the tick-based re-filter fallback.
+     */
+    public static boolean swapExtraSection(BenchWindow bw, MaterialExtraResourcesSection section) {
+        try {
+            EXTRARES_FIELD.set(bw, section);
+            return true;
+        } catch (Throwable t) {
+            if (!swapFailureLogged) {
+                swapFailureLogged = true;
+                Logger.getLogger("SimpleClaims").log(Level.WARNING,
+                        "Could not replace BenchWindow.extraResourcesSection; falling back to tick-based crafting claim filter", t);
+            }
+            return false;
+        }
     }
 
     public static void invalidate(Window w) {
